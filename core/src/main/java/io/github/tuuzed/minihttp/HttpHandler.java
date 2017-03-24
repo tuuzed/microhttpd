@@ -11,62 +11,62 @@ public abstract class HttpHandler implements Handler {
     private final static Logger sLogger = Logger.getLogger(StaticFileHandler.class);
 
     @Override
-    public Response serve(Request request) {
+    public boolean serve(Request request, Response response) {
         sLogger.d("接收到请求..." + request.toString());
         if ("GET".equals(request.getMethod())) {
-            return doGet(request);
+            return doGet(request, response);
         } else if ("POST".equals(request.getMethod())) {
-            return doPost(request);
+            return doPost(request, response);
         } else if ("PUT".equals(request.getMethod())) {
-            return doPut(request);
+            return doPut(request, response);
         } else if ("DELETE".equals(request.getMethod())) {
-            return doDelete(request);
+            return doDelete(request, response);
         } else if ("PATCH".equals(request.getMethod())) {
-            return doPatch(request);
+            return doPatch(request, response);
         } else if ("HEAD".equals(request.getMethod())) {
-            return doHead(request);
+            return doHead(request, response);
         } else if ("CONNECT".equals(request.getMethod())) {
-            return doConnect(request);
+            return doConnect(request, response);
         } else if ("OPTIONS".equals(request.getMethod())) {
-            return doOptions(request);
+            return doOptions(request, response);
         } else if ("TRACE".equals(request.getMethod())) {
-            return doTrace(request);
+            return doTrace(request, response);
         }
-        return null;
+        return false;
     }
 
-    public abstract Response doGet(Request request);
+    public abstract boolean doGet(Request request, Response response);
 
-    public Response doPost(Request request) {
-        return null;
+    public boolean doPost(Request request, Response response) {
+        return false;
     }
 
-    public Response doPut(Request request) {
-        return null;
+    public boolean doPut(Request request, Response response) {
+        return false;
     }
 
-    public Response doDelete(Request request) {
-        return null;
+    public boolean doDelete(Request request, Response response) {
+        return false;
     }
 
-    public Response doPatch(Request request) {
-        return null;
+    public boolean doPatch(Request request, Response response) {
+        return false;
     }
 
-    public Response doHead(Request request) {
-        return null;
+    public boolean doHead(Request request, Response response) {
+        return false;
     }
 
-    public Response doConnect(Request request) {
-        return null;
+    public boolean doConnect(Request request, Response response) {
+        return false;
     }
 
-    public Response doOptions(Request request) {
-        return null;
+    public boolean doOptions(Request request, Response response) {
+        return false;
     }
 
-    public Response doTrace(Request request) {
-        return null;
+    public boolean doTrace(Request request, Response response) {
+        return false;
     }
 
 }

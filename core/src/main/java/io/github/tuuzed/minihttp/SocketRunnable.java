@@ -3,73 +3,71 @@ package io.github.tuuzed.minihttp;
 import io.github.tuuzed.minihttp.request.Request;
 import io.github.tuuzed.minihttp.request.RequestImpl;
 import io.github.tuuzed.minihttp.response.Response;
+import io.github.tuuzed.minihttp.response.ResponseImpl;
 import io.github.tuuzed.minihttp.response.Status;
-import io.github.tuuzed.minihttp.response.StringResponse;
 import io.github.tuuzed.minihttp.util.Logger;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 class SocketRunnable implements Runnable {
     private static final Logger sLogger = Logger.getLogger(MiniHTTPd.class);
-    private Socket socket;
+    private Socket client;
     private int buffSize;
-    private RequestsDispatcher dispatcher;
+    private RequestsDispatcher mDispatcher;
 
-    SocketRunnable(RequestsDispatcher dispatcher, Socket socket, int buffSize) {
-        this.dispatcher = dispatcher;
-        this.socket = socket;
+    SocketRunnable(RequestsDispatcher dispatcher, Socket client, int buffSize) {
+        this.mDispatcher = dispatcher;
+        this.client = client;
         this.buffSize = buffSize;
     }
 
     @Override
     public void run() {
         InputStream in = null;
-        OutputStream out = null;
         try {
             // 输出流
-            in = socket.getInputStream();
+            in = client.getInputStream();
             // 请求
             byte[] bytes = new byte[buffSize];
             int read = in.read(bytes);
             String rawRequest = new String(bytes).trim();
             sLogger.d("rawRequest:\n" + rawRequest);
             Request request = RequestImpl.analysis(rawRequest);
-            // 输出流
-            out = socket.getOutputStream();
             // 响应
-            Response response;
+            Response response = new ResponseImpl(client);
             if (request == null) {
                 // 不符合协议的请求
-                response = new StringResponse(Status.STATUS_400);
+                response.setStatus(Status.STATUS_400);
+                response.setContentType("text/plain");
+                response.write(Status.STATUS_400.toString().getBytes());
+                response.finish();
             } else {
                 // 符合协议的请求
-                Handler handler = dispatcher.getHandler(request.getUri());
+                Handler handler = mDispatcher.getHandler(request.getUri());
                 if (handler != null) {
-                    response = handler.serve(request);
-                    if (response == null) {
-                        // 请求方法未被实现
-                        response = new StringResponse(Status.STATUS_405);
+                    boolean isImpl = handler.serve(request, response);
+                    if (!isImpl) {
+                        response.setStatus(Status.STATUS_405);
+                        response.setContentType("text/plain");
+                        response.write(Status.STATUS_405.toString().getBytes());
+                        response.finish();
                     }
                 } else {
                     // 请求URI不存在
-                    response = new StringResponse(Status.STATUS_404);
+                    response.setStatus(Status.STATUS_404);
+                    response.setContentType("text/plain");
+                    response.write(Status.STATUS_404.toString().getBytes());
+                    response.finish();
                 }
             }
-            out.write((String.format("HTTP/1.1 %s\r\n", response.getStatus().toString())).getBytes());
-            out.write(response.getHeader().getBytes());
-            out.write("\r\n".getBytes());
-            out.write(response.getBody());
-            out.flush();
         } catch (IOException e) {
             sLogger.e(e);
         } finally {
-            close(out);
             close(in);
-            close(socket);
+            close(client);
             sLogger.d(String.format("客户端(%d)断开...", hashCode()));
         }
     }
