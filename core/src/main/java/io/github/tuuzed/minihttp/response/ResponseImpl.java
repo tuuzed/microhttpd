@@ -33,8 +33,18 @@ public class ResponseImpl implements Response {
 
     @Override
     public void write(InputStream in) throws IOException {
-        byte[] bytes = new byte[1024];
-        while (in.read(bytes) != -1) {
+        byte[] bytes;
+        int available = in.available();
+        if (available < 1024) {
+            bytes = new byte[available];
+        } else {
+            bytes = new byte[1024];
+        }
+        while ((available = in.available()) != 0) {
+            if (available < 1024) {
+                bytes = new byte[available];
+            }
+            int read = in.read(bytes);
             write(bytes);
         }
         in.close();
@@ -55,7 +65,7 @@ public class ResponseImpl implements Response {
                         if (file.length() > 0) {
                             write(new FileInputStream(file));
                         } else {
-                            write(new byte[1]);
+                            write("");
                         }
                         break;
                     }
@@ -65,13 +75,13 @@ public class ResponseImpl implements Response {
                 write(Status.STATUS_404.toString());
             }
         } else {
-            addHeader("Content-Type", MimeType.getMimeType(file));
+            setContentType(MimeType.getMimeType(file));
             addHeader("Content-Disposition", "filename=" + file.getName());
             setStatus(Status.STATUS_200);
             if (file.length() > 0) {
                 write(new FileInputStream(file));
             } else {
-                write(new byte[1]);
+                write("");
             }
         }
     }
@@ -121,6 +131,7 @@ public class ResponseImpl implements Response {
      * @param key
      * @param value
      */
+    @Override
     public void addHeader(String key, String value) {
         mHeader.put(key, value);
     }

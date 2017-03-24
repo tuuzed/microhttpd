@@ -2,6 +2,7 @@ package io.github.tuuzed.minihttp.request;
 
 import io.github.tuuzed.minihttp.util.TextUtils;
 
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,9 +65,10 @@ public class RequestImpl implements Request {
                     uri = split1[0];
                     for (String str : split1[1].split("&")) {
                         String[] split2 = str.split("=");
-                        params.put(split2[0], split2[1]);
+                        params.put(URLDecoder.decode(split2[0]), URLDecoder.decode(split2[1]));
                     }
                 }
+                uri = URLDecoder.decode(uri);
             } else {
                 // 匹配的空行则说明Header结束
                 if ("".equals(s)) {

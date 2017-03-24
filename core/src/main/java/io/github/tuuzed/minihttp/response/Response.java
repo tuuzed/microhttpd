@@ -17,4 +17,6 @@ public interface Response extends Closeable {
     void setStatus(Status status);
 
     void setContentType(String contentType);
+
+    void addHeader(String key, String value);
 }
