@@ -26,55 +26,41 @@ class SocketRunnable implements Runnable {
 
     @Override
     public void run() {
+        Response response = new ResponseImpl(client);
         InputStream in = null;
         try {
-            // 输出流
             in = client.getInputStream();
-            // 请求
             byte[] bytes = new byte[buffSize];
             int read = in.read(bytes);
             String rawRequest = new String(bytes).trim();
             sLogger.d("rawRequest:\n" + rawRequest);
             Request request = RequestImpl.analysis(rawRequest);
-            // 响应
-            Response response = new ResponseImpl(client);
             if (request == null) {
                 // 不符合协议的请求
                 response.setStatus(Status.STATUS_400);
-                response.setContentType("text/plain");
-                response.write(Status.STATUS_400.toString().getBytes());
-                response.finish();
+                response.write(Status.STATUS_400.toString());
             } else {
                 // 符合协议的请求
                 Handler handler = mDispatcher.getHandler(request.getUri());
                 if (handler != null) {
-                    boolean isImpl = handler.serve(request, response);
-                    if (!isImpl) {
-                        response.setStatus(Status.STATUS_405);
-                        response.setContentType("text/plain");
-                        response.write(Status.STATUS_405.toString().getBytes());
-                        response.finish();
-                    }
+                    handler.serve(request, response);
                 } else {
                     // 请求URI不存在
                     response.setStatus(Status.STATUS_404);
-                    response.setContentType("text/plain");
-                    response.write(Status.STATUS_404.toString().getBytes());
-                    response.finish();
+                    response.write(Status.STATUS_404.toString());
                 }
             }
         } catch (IOException e) {
             sLogger.e(e);
         } finally {
-            close(in);
-            close(client);
+            quietClose(in);
+            quietClose(response);
             sLogger.d(String.format("客户端(%d)断开...", hashCode()));
         }
     }
 
-
-    // 关闭可关闭的对象
-    private static void close(Closeable closeable) {
+    // 静默关闭可关闭的对象
+    private static void quietClose(Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();

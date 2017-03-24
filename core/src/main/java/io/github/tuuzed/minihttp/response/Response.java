@@ -1,10 +1,11 @@
 package io.github.tuuzed.minihttp.response;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public interface Response {
+public interface Response extends Closeable {
     void write(InputStream in) throws IOException;
 
     void write(byte[] bytes) throws IOException;
@@ -16,6 +17,4 @@ public interface Response {
     void setStatus(Status status);
 
     void setContentType(String contentType);
-
-    void finish();
 }

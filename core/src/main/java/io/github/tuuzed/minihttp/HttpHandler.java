@@ -2,7 +2,10 @@ package io.github.tuuzed.minihttp;
 
 import io.github.tuuzed.minihttp.request.Request;
 import io.github.tuuzed.minihttp.response.Response;
+import io.github.tuuzed.minihttp.response.Status;
 import io.github.tuuzed.minihttp.util.Logger;
+
+import java.io.IOException;
 
 /**
  * Http请求处理
@@ -11,62 +14,69 @@ public abstract class HttpHandler implements Handler {
     private final static Logger sLogger = Logger.getLogger(StaticFileHandler.class);
 
     @Override
-    public boolean serve(Request request, Response response) {
+    public void serve(Request request, Response response) throws IOException {
         sLogger.d("接收到请求..." + request.toString());
         if ("GET".equals(request.getMethod())) {
-            return doGet(request, response);
+            doGet(request, response);
         } else if ("POST".equals(request.getMethod())) {
-            return doPost(request, response);
+            doPost(request, response);
         } else if ("PUT".equals(request.getMethod())) {
-            return doPut(request, response);
+            doPut(request, response);
         } else if ("DELETE".equals(request.getMethod())) {
-            return doDelete(request, response);
+            doDelete(request, response);
         } else if ("PATCH".equals(request.getMethod())) {
-            return doPatch(request, response);
+            doPatch(request, response);
         } else if ("HEAD".equals(request.getMethod())) {
-            return doHead(request, response);
+            doHead(request, response);
         } else if ("CONNECT".equals(request.getMethod())) {
-            return doConnect(request, response);
+            doConnect(request, response);
         } else if ("OPTIONS".equals(request.getMethod())) {
-            return doOptions(request, response);
+            doOptions(request, response);
         } else if ("TRACE".equals(request.getMethod())) {
-            return doTrace(request, response);
+            doTrace(request, response);
+        } else {
+            response405(response);
         }
-        return false;
     }
 
-    public abstract boolean doGet(Request request, Response response);
-
-    public boolean doPost(Request request, Response response) {
-        return false;
+    public void doGet(Request request, Response response) throws IOException {
+        response405(response);
     }
 
-    public boolean doPut(Request request, Response response) {
-        return false;
+    public void doPost(Request request, Response response) throws IOException {
+        response405(response);
     }
 
-    public boolean doDelete(Request request, Response response) {
-        return false;
+    public void doPut(Request request, Response response) throws IOException {
+        response405(response);
     }
 
-    public boolean doPatch(Request request, Response response) {
-        return false;
+    public void doDelete(Request request, Response response) throws IOException {
+        response405(response);
     }
 
-    public boolean doHead(Request request, Response response) {
-        return false;
+    public void doPatch(Request request, Response response) throws IOException {
+        response405(response);
     }
 
-    public boolean doConnect(Request request, Response response) {
-        return false;
+    public void doHead(Request request, Response response) throws IOException {
+        response405(response);
     }
 
-    public boolean doOptions(Request request, Response response) {
-        return false;
+    public void doConnect(Request request, Response response) throws IOException {
+        response405(response);
     }
 
-    public boolean doTrace(Request request, Response response) {
-        return false;
+    public void doOptions(Request request, Response response) throws IOException {
+        response405(response);
     }
 
+    public void doTrace(Request request, Response response) throws IOException {
+        response405(response);
+    }
+
+    private void response405(Response response) throws IOException {
+        response.setStatus(Status.STATUS_405);
+        response.write(Status.STATUS_405.toString());
+    }
 }

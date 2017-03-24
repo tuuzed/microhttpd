@@ -9,14 +9,7 @@ import java.io.IOException;
 public class IndexHttpHandler extends HttpHandler {
 
     @Override
-    public boolean doGet(Request request, Response response) {
-        try {
-            response.write("hello");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            response.finish();
-        }
-        return true;
+    public void doGet(Request request, Response response) throws IOException {
+        response.write("hello");
     }
 }

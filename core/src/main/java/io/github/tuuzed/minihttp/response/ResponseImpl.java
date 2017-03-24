@@ -37,46 +37,44 @@ public class ResponseImpl implements Response {
         while (in.read(bytes) != -1) {
             write(bytes);
         }
+        in.close();
     }
 
     @Override
     public void write(File file) throws IOException {
-        if (!file.exists()) {
-            // 如果文件不存在
-            setStatus(Status.STATUS_404);
-            write(Status.STATUS_404.toString().getBytes());
-            throw new FileNotFoundException(String.format("not find %s%s%s", file.getAbsolutePath(), File.separator, file.getName()));
-        } else if (file.isDirectory()) {
-            // 是一个文件夹
-            String[] list = file.list();
-            if (list == null) {
-                setStatus(Status.STATUS_404);
-                write(Status.STATUS_404.toString().getBytes());
-                throw new FileNotFoundException(String.format("not find %s%s%s", file.getAbsolutePath(), File.separator, file.getName()));
-            } else {
+        if (!file.exists() || file.isDirectory()) {
+            String[] list;
+            if (file.isDirectory() && (list = file.list()) != null) {
                 for (String s : list) {
                     if (sDefIndex.matcher(s).find()) {
                         sLogger.d("获取到默认首页HTML文件:" + s);
                         file = new File(file, s);
+                        addHeader("Content-Type", MimeType.getMimeType(file));
+                        addHeader("Content-Disposition", "filename=" + file.getName());
+                        setStatus(Status.STATUS_200);
+                        if (file.length() > 0) {
+                            write(new FileInputStream(file));
+                        } else {
+                            write(new byte[1]);
+                        }
                         break;
                     }
                 }
-                if (file.isDirectory()) {
-                    // 还是一个目录
-                    setStatus(Status.STATUS_404);
-                    write(Status.STATUS_404.toString().getBytes());
-                    throw new FileNotFoundException("not find default index file");
-                } else {
-                    // 是一个文件
-                    addHeader("Content-Type", MimeType.getMimeType(file));
-                    addHeader("Content-Disposition", "filename=" + file.getName());
-                    setStatus(Status.STATUS_200);
-                    write(new FileInputStream(file));
-                }
+            } else {
+                setStatus(Status.STATUS_404);
+                write(Status.STATUS_404.toString());
+            }
+        } else {
+            addHeader("Content-Type", MimeType.getMimeType(file));
+            addHeader("Content-Disposition", "filename=" + file.getName());
+            setStatus(Status.STATUS_200);
+            if (file.length() > 0) {
+                write(new FileInputStream(file));
+            } else {
+                write(new byte[1]);
             }
         }
     }
-
 
     @Override
     public void write(byte[] bytes) throws IOException {
@@ -100,17 +98,9 @@ public class ResponseImpl implements Response {
     }
 
     @Override
-    public void finish() {
-        InputStream inputStream = null;
-        try {
-            inputStream = mClient.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            quietClose(inputStream);
-            quietClose(mOut);
-            quietClose(mClient);
-        }
+    public void close() throws IOException {
+        quietClose(mOut);
+        quietClose(mClient);
     }
 
     // 写入头部

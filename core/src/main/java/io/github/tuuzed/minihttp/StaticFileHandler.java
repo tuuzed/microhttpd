@@ -22,17 +22,10 @@ public class StaticFileHandler implements Handler {
     }
 
     @Override
-    public boolean serve(Request request, Response response) {
+    public void serve(Request request, Response response) throws IOException {
         sLogger.d("接收到请求..." + request.toString());
         String uri = request.getUri();
         String path = uri.replace("/static", staticDir);
-        try {
-            response.write(new File(path));
-        } catch (IOException e) {
-            sLogger.e(e);
-        } finally {
-            response.finish();
-        }
-        return true;
+        response.write(new File(path));
     }
 }

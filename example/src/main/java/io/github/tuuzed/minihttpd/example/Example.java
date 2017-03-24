@@ -10,7 +10,7 @@ public class Example {
                 .setPort(5000)
                 .setThreadNumber(Runtime.getRuntime().availableProcessors())
                 .setTimeout(1000 * 30)
-                .setStaticPath("E:\\")
+                .setStaticPath("D:\\")
                 .setDebug(true)
                 .build();
         server.register("^/$", new IndexHttpHandler());

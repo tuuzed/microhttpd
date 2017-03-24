@@ -4,6 +4,8 @@ package io.github.tuuzed.minihttp;
 import io.github.tuuzed.minihttp.request.Request;
 import io.github.tuuzed.minihttp.response.Response;
 
+import java.io.IOException;
+
 public interface Handler {
-    boolean serve(Request request, Response response);
+    void serve(Request request, Response response) throws IOException;
 }
