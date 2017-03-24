@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MiniHTTPd.iml" filepath="$PROJECT_DIR$/.idea/modules/MiniHTTPd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MiniHTTPd_main.iml" filepath="$PROJECT_DIR$/.idea/modules/MiniHTTPd_main.iml" group="MiniHTTPd" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MiniHTTPd_test.iml" filepath="$PROJECT_DIR$/.idea/modules/MiniHTTPd_test.iml" group="MiniHTTPd" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" group="core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core_main.iml" group="core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core_test.iml" group="core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example.iml" group="example" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example_main.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example_main.iml" group="example" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example_test.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example_test.iml" group="example" />
+    </modules>
+  </component>
+</project>
