@@ -9,6 +9,6 @@ public class IndexHttpHandler extends HttpHandler {
 
     @Override
     public Response doGet(Request request) {
-        return new StringResponse(request.toString());
+        return new StringResponse("hello");
     }
 }

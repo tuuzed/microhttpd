@@ -6,8 +6,21 @@ package io.github.tuuzed.minihttp.response;
 public class StringResponse extends BaseResponse {
     private String body;
 
+    public StringResponse(Status status) {
+        this(status, status.toString());
+    }
+
     public StringResponse(String body) {
-        this.status = STATUS_200;
+        this(Status.STATUS_200, body);
+    }
+
+    public StringResponse(Status status, String body) {
+        this.status = status;
+        addHeader("Content-Type", "text/plain; charset=utf-8");
+        this.body = body;
+    }
+
+    public void setBody(String body) {
         this.body = body;
     }
 

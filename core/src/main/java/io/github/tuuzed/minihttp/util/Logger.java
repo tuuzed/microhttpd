@@ -1,39 +1,48 @@
 package io.github.tuuzed.minihttp.util;
 
-public class LogUtils {
+public class Logger {
     private static boolean debug;
+    private String clazzName;
 
     public static void setDebug(boolean debug) {
-        LogUtils.debug = debug;
+        Logger.debug = debug;
     }
 
     public static boolean isDebug() {
         return debug;
     }
 
-    public static void e(String tag, String msg) {
+    public Logger(String clazzName) {
+        this.clazzName = clazzName;
+    }
+
+    public static Logger getLogger(Class clazz) {
+        return new Logger(clazz.getName());
+    }
+
+    public void e(String msg) {
         if (debug) {
-            System.err.println(tag + " => " + msg);
+            System.err.printf("[ERROR:]%s => %s%n", clazzName, msg);
         }
     }
 
-    public static void e(String tag, Throwable throwable) {
+    public void e(Throwable throwable) {
         if (debug) {
             throwable.printStackTrace();
-            System.err.println(tag + " => " + throwable.toString());
+            System.err.printf("[ERROR:] %s => %s%n", clazzName, throwable.toString());
         }
     }
 
-    public static void d(String tag, String msg) {
+    public void d(String msg) {
         if (debug) {
-            System.out.println(tag + " => " + msg);
+            System.out.printf("[DEBUG:] %s => %s%n", clazzName, msg);
         }
     }
 
-    public static void d(String tag, Throwable throwable) {
+    public void d(Throwable throwable) {
         if (debug) {
             throwable.printStackTrace();
-            System.out.println(tag + " => " + throwable.toString());
+            System.out.printf("[DEBUG:] %s => %s%n", clazzName, throwable.toString());
         }
     }
 }

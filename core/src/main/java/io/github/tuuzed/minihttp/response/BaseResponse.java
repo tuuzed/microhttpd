@@ -3,28 +3,27 @@ package io.github.tuuzed.minihttp.response;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class BaseResponse implements Response {
+public class BaseResponse implements Response {
 
-    protected String status;
+    protected Status status;
     protected Map<String, String> header;
     protected byte[] body;
 
-
     protected BaseResponse() {
         header = new HashMap<>();
-        header.put("Content-Type", "text/plain; charset=utf-8");
+        addHeader("Server", "MiniHTTPd");
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
     @Override
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void putHeader(String key, String value) {
+    public void addHeader(String key, String value) {
         header.put(key, value);
     }
 

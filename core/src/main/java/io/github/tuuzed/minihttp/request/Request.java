@@ -12,6 +12,4 @@ public interface Request {
     String getParams(String key);
 
     String getData(String key);
-
-    boolean isNormal();
 }

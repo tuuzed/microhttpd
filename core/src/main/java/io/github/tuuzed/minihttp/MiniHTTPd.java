@@ -1,27 +1,37 @@
 package io.github.tuuzed.minihttp;
 
 
-import io.github.tuuzed.minihttp.util.LogUtils;
+import io.github.tuuzed.minihttp.util.Logger;
 import io.github.tuuzed.minihttp.util.TextUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class HttpServer {
-    private static final String TAG = "HttpServer";
+public class MiniHTTPd {
+    private static final Logger sLogger = Logger.getLogger(MiniHTTPd.class);
     private RequestsDispatcher mDispatcher;
     private String address;
     private int port;
     private int timeout;
 
-    private HttpServer(Builder builder) {
+    private MiniHTTPd(Builder builder) {
+        Logger.setDebug(builder.debug);
         this.address = builder.address;
         this.port = builder.port;
         this.timeout = builder.timeout;
-        LogUtils.setDebug(builder.debug);
         mDispatcher = new RequestsDispatcher(builder.threadNumber, builder.buffSize);
+        if (!TextUtils.isEmpty(builder.staticPath)) {
+            File file = new File(builder.staticPath);
+            if (file.exists() && file.isDirectory()) {
+                if (TextUtils.isEmpty(builder.staticUri)) {
+                    builder.staticUri = "^/static/.*";
+                }
+                register(builder.staticUri, new StaticFileHandler(builder.staticUri, file));
+            }
+        }
     }
 
     /**
@@ -34,11 +44,11 @@ public class HttpServer {
     /**
      * 注册 Handler
      *
-     * @param uri     :uri
+     * @param regex   :URI 正则表达式
      * @param handler :处理者
      */
-    public void register(String uri, Handler handler) {
-        mDispatcher.register(uri, handler);
+    public void register(String regex, Handler handler) {
+        mDispatcher.register(regex, handler);
     }
 
     private void run(final String address, final int port) {
@@ -52,12 +62,12 @@ public class HttpServer {
                     serverSocket.bind(new InetSocketAddress(address, port));
                     while (true) {
                         Socket socket = serverSocket.accept();
-                        LogUtils.d(TAG, String.format("客户端(%d)连入...", hashCode()));
+                        sLogger.d(String.format("客户端(%d)连入...", hashCode()));
                         socket.setSoTimeout(timeout);
                         mDispatcher.dispatch(socket);
                     }
                 } catch (IOException e) {
-                    LogUtils.e(TAG, e);
+                    sLogger.e(e);
                 } finally {
                     if (serverSocket != null) {
                         try {
@@ -69,7 +79,7 @@ public class HttpServer {
                 }
             }
         }).start();
-        LogUtils.d(TAG, String.format("Server is running http://%s:%d", address, port));
+        sLogger.d(String.format("Server is running http://%s:%d", address, port));
     }
 
     public static class Builder {
@@ -79,6 +89,8 @@ public class HttpServer {
         private int buffSize;
         private int timeout;
         private boolean debug;
+        private String staticPath;
+        private String staticUri;
 
         public Builder setAddress(String address) {
             this.address = address;
@@ -110,7 +122,13 @@ public class HttpServer {
             return this;
         }
 
-        public HttpServer build() {
+        public Builder setStaticPath(String staticPath) {
+            this.staticPath = staticPath;
+            return this;
+        }
+
+
+        public MiniHTTPd build() {
             if (TextUtils.isEmpty(this.address)) {
                 this.address = "127.0.0.1";
             }
@@ -125,9 +143,9 @@ public class HttpServer {
                 buffSize = 1024 * 100;
             }
             if (this.timeout == 0) {
-                this.timeout = Integer.MAX_VALUE;
+                this.timeout = 1000 * 30;
             }
-            return new HttpServer(this);
+            return new MiniHTTPd(this);
         }
     }
 }

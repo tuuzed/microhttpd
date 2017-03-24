@@ -15,9 +15,22 @@ public class RequestImpl implements Request {
     private Map<String, String> header;
     private Map<String, String> params;
     private Map<String, String> data;
-    private boolean normal = false;
 
-    public RequestImpl(String rawRequest) {
+    public RequestImpl(String method,
+                       String uri,
+                       String protocol,
+                       Map<String, String> header,
+                       Map<String, String> params,
+                       Map<String, String> data) {
+        this.method = method;
+        this.uri = uri;
+        this.protocol = protocol;
+        this.header = header;
+        this.params = params;
+        this.data = data;
+    }
+
+    public static Request analysis(String rawRequest) {
         String[] rawArray = rawRequest.split("\r\n");
         boolean isEndHeader = false;
         Map<String, String> header = new HashMap<>();
@@ -35,14 +48,14 @@ public class RequestImpl implements Request {
                 String[] split = s.split(" ");
                 // 如果数组长度小于3则不符合协议
                 if (split.length < 3) {
-                    return;
+                    return null;
                 }
                 method = split[0];
                 uri = split[1];
                 protocol = split[2];
                 // 存在空字符则不符合协议
                 if (TextUtils.isEmpty(method) || TextUtils.isEmpty(uri) || TextUtils.isEmpty(protocol)) {
-                    return;
+                    return null;
                 }
                 method = method.toUpperCase();
                 // 提取 params
@@ -75,13 +88,7 @@ public class RequestImpl implements Request {
                 data.put(split[0], split[1]);
             }
         }
-        this.method = method;
-        this.uri = uri;
-        this.protocol = protocol;
-        this.header = header;
-        this.params = params;
-        this.data = data;
-        this.normal = true;
+        return new RequestImpl(method, uri, protocol, header, params, data);
     }
 
     @Override
@@ -112,11 +119,6 @@ public class RequestImpl implements Request {
     @Override
     public String getData(String key) {
         return data.get(key);
-    }
-
-    @Override
-    public boolean isNormal() {
-        return normal;
     }
 
     @Override
