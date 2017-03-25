@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface Response extends Closeable {
+
     void write(InputStream in) throws IOException;
 
     void write(byte[] bytes) throws IOException;

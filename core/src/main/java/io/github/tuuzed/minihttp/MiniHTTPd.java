@@ -1,6 +1,7 @@
 package io.github.tuuzed.minihttp;
 
 
+import io.github.tuuzed.minihttp.exception.URIRegexException;
 import io.github.tuuzed.minihttp.handler.Handler;
 import io.github.tuuzed.minihttp.handler.StaticFileHandler;
 import io.github.tuuzed.minihttp.util.Logger;
@@ -50,7 +51,11 @@ public class MiniHTTPd {
      * @param handler :处理者
      */
     public void register(String regex, Handler handler) {
-        mDispatcher.register(regex, handler);
+        if (regex.length() > 2 && "^/".equals(regex.substring(0, 2))) {
+            mDispatcher.register(regex, handler);
+        } else {
+            throw new URIRegexException(regex);
+        }
     }
 
     private void run(final String address, final int port) {

@@ -7,13 +7,11 @@ import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * HTTP响应
  */
 public class ResponseImpl implements Response {
-    private static final Pattern sDefIndex = Pattern.compile("^((index)|(default))\\.((htm)|(html))$");
     private static final Logger sLogger = Logger.getLogger(ResponseImpl.class);
     // 是否写入头部
     private boolean isWriteHeader;
@@ -21,7 +19,6 @@ public class ResponseImpl implements Response {
     private Map<String, String> mHeader;
     private Socket mClient;
     private OutputStream mOut;
-
 
     public ResponseImpl(Socket client) {
         mClient = client;
@@ -52,28 +49,14 @@ public class ResponseImpl implements Response {
 
     @Override
     public void write(File file) throws IOException {
-        if (!file.exists() || file.isDirectory()) {
-            String[] list;
-            if (file.isDirectory() && (list = file.list()) != null) {
-                for (String s : list) {
-                    if (sDefIndex.matcher(s).find()) {
-                        sLogger.d("获取到默认首页HTML文件:" + s);
-                        file = new File(file, s);
-                        addHeader("Content-Type", MimeType.getMimeType(file));
-                        addHeader("Content-Disposition", "filename=" + file.getName());
-                        setStatus(Status.STATUS_200);
-                        if (file.length() > 0) {
-                            write(new FileInputStream(file));
-                        } else {
-                            write("");
-                        }
-                        break;
-                    }
-                }
-            } else {
-                setStatus(Status.STATUS_404);
-                write(Status.STATUS_404.toString());
-            }
+        if (!file.exists()) {
+            // 文件不存在
+            setStatus(Status.STATUS_404);
+            write(Status.STATUS_404.toString());
+        } else if (file.isDirectory()) {
+            // 是一个文件夹
+            setStatus(Status.STATUS_403);
+            write(Status.STATUS_403.toString());
         } else {
             setContentType(MimeType.getMimeType(file));
             addHeader("Content-Disposition", "filename=" + file.getName());
