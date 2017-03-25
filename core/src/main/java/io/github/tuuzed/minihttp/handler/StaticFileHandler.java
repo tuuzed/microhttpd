@@ -1,4 +1,4 @@
-package io.github.tuuzed.minihttp;
+package io.github.tuuzed.minihttp.handler;
 
 
 import io.github.tuuzed.minihttp.request.Request;
@@ -13,11 +13,11 @@ import java.io.IOException;
  */
 public class StaticFileHandler implements Handler {
     private final static Logger sLogger = Logger.getLogger(StaticFileHandler.class);
-    private String uri;
+    private String uriRegex;
     private String staticDir;
 
-    public StaticFileHandler(String uri, File file) {
-        this.uri = uri;
+    public StaticFileHandler(String uriRegex, File file) {
+        this.uriRegex = uriRegex;
         this.staticDir = file.getAbsolutePath();
     }
 
@@ -25,7 +25,10 @@ public class StaticFileHandler implements Handler {
     public void serve(Request request, Response response) throws IOException {
         sLogger.d("接收到请求..." + request.toString());
         String uri = request.getUri();
-        String path = uri.replace("/static", staticDir);
+        // ^/static/.*  => /static/
+        // ^/.*         => /
+        String path = staticDir + File.separator + uri.replaceFirst(uriRegex.substring(1, uriRegex.length() - 2), "");
+        sLogger.d("path =" + path);
         response.write(new File(path));
     }
 }

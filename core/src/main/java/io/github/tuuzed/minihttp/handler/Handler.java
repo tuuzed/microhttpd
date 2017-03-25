@@ -1,4 +1,4 @@
-package io.github.tuuzed.minihttp;
+package io.github.tuuzed.minihttp.handler;
 
 
 import io.github.tuuzed.minihttp.request.Request;

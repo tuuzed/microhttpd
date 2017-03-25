@@ -1,6 +1,8 @@
 package io.github.tuuzed.minihttp;
 
 
+import io.github.tuuzed.minihttp.handler.Handler;
+import io.github.tuuzed.minihttp.handler.StaticFileHandler;
 import io.github.tuuzed.minihttp.util.Logger;
 import io.github.tuuzed.minihttp.util.TextUtils;
 
@@ -26,10 +28,10 @@ public class MiniHTTPd {
         if (!TextUtils.isEmpty(builder.staticPath)) {
             File file = new File(builder.staticPath);
             if (file.exists() && file.isDirectory()) {
-                if (TextUtils.isEmpty(builder.staticUri)) {
-                    builder.staticUri = "^/static/.*";
+                if (TextUtils.isEmpty(builder.staticUriRegex)) {
+                    builder.staticUriRegex = "^/static/.*";
                 }
-                register(builder.staticUri, new StaticFileHandler(builder.staticUri, file));
+                register(builder.staticUriRegex, new StaticFileHandler(builder.staticUriRegex, file));
             }
         }
     }
@@ -90,7 +92,7 @@ public class MiniHTTPd {
         private int timeout;
         private boolean debug;
         private String staticPath;
-        private String staticUri;
+        private String staticUriRegex;
 
         public Builder setAddress(String address) {
             this.address = address;
@@ -127,6 +129,10 @@ public class MiniHTTPd {
             return this;
         }
 
+        public Builder setStaticUriRegex(String staticUriRegex) {
+            this.staticUriRegex = staticUriRegex;
+            return this;
+        }
 
         public MiniHTTPd build() {
             if (TextUtils.isEmpty(this.address)) {
@@ -139,8 +145,8 @@ public class MiniHTTPd {
                 this.threadNumber = Runtime.getRuntime().availableProcessors();
             }
             if (this.buffSize == 0) {
-                // 100kb
-                buffSize = 1024 * 100;
+                // 1kb
+                buffSize = 1024;
             }
             if (this.timeout == 0) {
                 this.timeout = 1000 * 30;

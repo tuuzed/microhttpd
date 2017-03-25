@@ -1,5 +1,7 @@
 package io.github.tuuzed.minihttp;
 
+import io.github.tuuzed.minihttp.handler.Handler;
+
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;

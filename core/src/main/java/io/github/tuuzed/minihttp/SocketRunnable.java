@@ -1,5 +1,6 @@
 package io.github.tuuzed.minihttp;
 
+import io.github.tuuzed.minihttp.handler.Handler;
 import io.github.tuuzed.minihttp.request.Request;
 import io.github.tuuzed.minihttp.request.RequestImpl;
 import io.github.tuuzed.minihttp.response.Response;
@@ -7,10 +8,12 @@ import io.github.tuuzed.minihttp.response.ResponseImpl;
 import io.github.tuuzed.minihttp.response.Status;
 import io.github.tuuzed.minihttp.util.Logger;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 class SocketRunnable implements Runnable {
     private static final Logger sLogger = Logger.getLogger(MiniHTTPd.class);
@@ -28,13 +31,20 @@ class SocketRunnable implements Runnable {
     public void run() {
         Response response = new ResponseImpl(client);
         InputStream in = null;
+        // 一个用于缓存输入流的输出流
+        ByteArrayOutputStream buffInOut = null;
         try {
             in = client.getInputStream();
-            byte[] bytes = new byte[buffSize];
-            int read = in.read(bytes);
-            String rawRequest = new String(bytes).trim();
-            sLogger.d("rawRequest:\n" + rawRequest);
-            Request request = RequestImpl.analysis(rawRequest);
+            buffInOut = new ByteArrayOutputStream();
+            byte[] buf = new byte[buffSize];
+            int read = in.read(buf);
+            buffInOut.write(buf);
+            while (in.available() != 0) {
+                Arrays.fill(buf, (byte) 0);
+                read = in.read(buf);
+                buffInOut.write(buf);
+            }
+            Request request = RequestImpl.getRequest(buffInOut.toByteArray());
             if (request == null) {
                 // 不符合协议的请求
                 response.setStatus(Status.STATUS_400);
@@ -53,6 +63,7 @@ class SocketRunnable implements Runnable {
         } catch (IOException e) {
             sLogger.e(e);
         } finally {
+            quietClose(buffInOut);
             quietClose(in);
             quietClose(response);
             sLogger.d(String.format("客户端(%d)断开...", hashCode()));
@@ -65,7 +76,7 @@ class SocketRunnable implements Runnable {
             try {
                 closeable.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                sLogger.e(e);
             }
         }
     }

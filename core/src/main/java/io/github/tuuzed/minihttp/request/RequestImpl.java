@@ -1,7 +1,11 @@
 package io.github.tuuzed.minihttp.request;
 
+import io.github.tuuzed.minihttp.util.Logger;
 import io.github.tuuzed.minihttp.util.TextUtils;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +14,8 @@ import java.util.Map;
  * HTTP请求
  */
 public class RequestImpl implements Request {
+    private static final Logger sLogger = Logger.getLogger(RequestImpl.class);
+
     private String method;
     private String uri;
     private String protocol;
@@ -17,21 +23,11 @@ public class RequestImpl implements Request {
     private Map<String, String> params;
     private Map<String, String> data;
 
-    public RequestImpl(String method,
-                       String uri,
-                       String protocol,
-                       Map<String, String> header,
-                       Map<String, String> params,
-                       Map<String, String> data) {
-        this.method = method;
-        this.uri = uri;
-        this.protocol = protocol;
-        this.header = header;
-        this.params = params;
-        this.data = data;
-    }
 
-    public static Request analysis(String rawRequest) {
+    public static Request getRequest(byte[] bytes) {
+        String encoding = "utf-8";
+        String rawRequest = new String(bytes).trim();
+        sLogger.d("rawRequest:\n" + rawRequest);
         String[] rawArray = rawRequest.split("\r\n");
         boolean isEndHeader = false;
         Map<String, String> header = new HashMap<>();
@@ -65,10 +61,19 @@ public class RequestImpl implements Request {
                     uri = split1[0];
                     for (String str : split1[1].split("&")) {
                         String[] split2 = str.split("=");
-                        params.put(URLDecoder.decode(split2[0]), URLDecoder.decode(split2[1]));
+                        try {
+                            params.put(URLDecoder.decode(split2[0], encoding),
+                                    URLDecoder.decode(split2[1], encoding));
+                        } catch (UnsupportedEncodingException e) {
+                            sLogger.e(e);
+                        }
                     }
                 }
-                uri = URLDecoder.decode(uri);
+                try {
+                    uri = URLDecoder.decode(uri, encoding);
+                } catch (UnsupportedEncodingException e) {
+                    sLogger.e(e);
+                }
             } else {
                 // 匹配的空行则说明Header结束
                 if ("".equals(s)) {
@@ -91,6 +96,31 @@ public class RequestImpl implements Request {
             }
         }
         return new RequestImpl(method, uri, protocol, header, params, data);
+    }
+
+    // 静默关闭可关闭的对象
+    private static void quietClose(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                sLogger.e(e);
+            }
+        }
+    }
+
+    private RequestImpl(String method,
+                        String uri,
+                        String protocol,
+                        Map<String, String> header,
+                        Map<String, String> params,
+                        Map<String, String> data) {
+        this.method = method;
+        this.uri = uri;
+        this.protocol = protocol;
+        this.header = header;
+        this.params = params;
+        this.data = data;
     }
 
     @Override
