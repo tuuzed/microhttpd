@@ -1,4 +1,4 @@
-rootProject.name = 'MiniHTTPd'
-include 'core'
+rootProject.name = 'MicroHTTPd'
+include 'microhttpd'
 include 'example'
 

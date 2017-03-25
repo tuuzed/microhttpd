@@ -6,8 +6,18 @@
       <module name="core_test" target="1.7" />
       <module name="example_main" target="1.7" />
       <module name="example_test" target="1.7" />
+      <module name="microhttpd_main" target="1.7" />
+      <module name="MicroHttpd_main" target="1.7" />
+      <module name="MicroHTTPd_main" target="1.7" />
+      <module name="MicroHttpd_test" target="1.7" />
+      <module name="MicroHTTPd_test" target="1.7" />
+      <module name="microhttpd_test" target="1.7" />
       <module name="MiniHTTPd_main" target="1.7" />
       <module name="MiniHTTPd_test" target="1.7" />
+      <module name="MircoHTTPd_main" target="1.7" />
+      <module name="mircohttpd_main" target="1.7" />
+      <module name="MircoHTTPd_test" target="1.7" />
+      <module name="mircohttpd_test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
