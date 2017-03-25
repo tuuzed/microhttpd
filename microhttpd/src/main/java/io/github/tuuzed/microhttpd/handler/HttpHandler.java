@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Http请求处理
  */
-public abstract class HttpHandler implements Handler {
+public class HttpHandler implements Handler {
     private final static Logger sLogger = Logger.getLogger(StaticFileHandler.class);
 
     @Override
@@ -39,42 +39,106 @@ public abstract class HttpHandler implements Handler {
         }
     }
 
+    /**
+     * GET 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doGet(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * POST 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doPost(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * PUT 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doPut(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * DELETE 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doDelete(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * PATCH 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doPatch(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * HEAD 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doHead(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * CONNECT 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doConnect(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * OPTIONS 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doOptions(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    /**
+     * TRACE 请求
+     *
+     * @param request  :请求
+     * @param response :响应
+     * @throws IOException :遇到异常时抛出
+     */
     public void doTrace(Request request, Response response) throws IOException {
         response405(response);
     }
 
+    // 响应405，方法未允许
     private void response405(Response response) throws IOException {
         response.setStatus(Status.STATUS_405);
         response.write(Status.STATUS_405.toString());

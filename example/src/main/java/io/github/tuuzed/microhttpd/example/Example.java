@@ -10,7 +10,7 @@ public class Example {
                 .setBindPort(5000)
                 .setFixedThreadNumber(Runtime.getRuntime().availableProcessors())
                 .setTimeout(1000 * 30)
-                .setStaticPath("D:\\blog\\public")
+                .setStaticPath("D:\\")
                 .setStaticUriRegex("^/.*")
                 .setDebug(true)
                 .build();

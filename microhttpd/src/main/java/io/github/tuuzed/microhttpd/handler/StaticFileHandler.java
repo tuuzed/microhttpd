@@ -38,34 +38,59 @@ public class StaticFileHandler implements Handler {
             // 文件不存在
             response.setStatus(Status.STATUS_404);
             response.write(Status.STATUS_404.toString());
-        } else if (file.isDirectory()) {
-            // 是一个文件夹
-            String[] list = file.list();
-            if (list == null) {
+        } else if (file.isFile()) {
+            // 存在且是一个文件
+            response.setStatus(Status.STATUS_200);
+            response.addHeader("Content-Length", String.valueOf(file.length()));
+            response.write(file);
+        } else if ("/".equals(uri.substring(uri.length() - 1)) && file.isDirectory()) {
+            // URI定位的是一个文件夹且这个文件夹存在
+            File[] files = file.listFiles();
+            if (files == null) {
                 // 空文件夹
-                response.setStatus(Status.STATUS_404);
-                response.write(Status.STATUS_404.toString());
+                response.setStatus(Status.STATUS_200);
+                response.setContentType("text/html; charset=utf-8");
+                // 返回上级目录
+                response.write("<a href=\"../\">../</a><br/>");
             } else {
                 // 不是空文件夹
-                for (String s : list) {
-                    if (sDefIndex.matcher(s).find()) {
-                        sLogger.d("获取到默认首页HTML文件:" + s);
-                        file = new File(file, s);
+                // 查找默认首页
+                for (File f : files) {
+                    if (sDefIndex.matcher(f.getName()).find() && f.isFile()) {
+                        sLogger.d("找到默认首页文件:" + f.getName());
+                        file = f;
                         response.addHeader("Content-Type", MimeType.getMimeType(file));
                         response.addHeader("Content-Disposition", "filename=" + file.getName());
                         response.setStatus(Status.STATUS_200);
                         if (file.length() > 0) {
+                            response.addHeader("Content-Length", String.valueOf(file.length()));
                             response.write(file);
                         } else {
                             response.write("");
                         }
-                        return;
+                        break;
+                    }
+                }
+                // 没有找到默认首页文件
+                if (file.isDirectory()) {
+                    response.setStatus(Status.STATUS_200);
+                    response.setContentType("text/html; charset=utf-8");
+                    // 返回上级目录
+                    response.write("<a href=\"../\">../</a><br/>");
+                    for (File f : files) {
+                        if (f.isDirectory()) {
+                            response.write(String.format("<a href=\"./%s/\">%s/</a><br/>",
+                                    f.getName(), f.getName()));
+                        } else {
+                            response.write(String.format("<a href=\"./%s\">%s</a><br/>",
+                                    f.getName(), f.getName()));
+                        }
                     }
                 }
             }
         } else {
-            // 存在且是一个文件
-            response.write(file);
+            response.setStatus(Status.STATUS_404);
+            response.write(Status.STATUS_404.toString());
         }
     }
 }

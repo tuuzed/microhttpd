@@ -41,24 +41,6 @@ public class MicroHTTPd {
      * 开启服务器
      */
     public void listen() {
-        run(address, port);
-    }
-
-    /**
-     * 注册 Handler
-     *
-     * @param regex   :URI 正则表达式
-     * @param handler :处理者
-     */
-    public void register(String regex, Handler handler) {
-        if (regex.length() > 2 && "^/".equals(regex.substring(0, 2))) {
-            mDispatcher.register(regex, handler);
-        } else {
-            throw new URIRegexException(regex);
-        }
-    }
-
-    private void run(final String address, final int port) {
         new Thread(new Runnable() {
             ServerSocket serverSocket = null;
 
@@ -67,7 +49,7 @@ public class MicroHTTPd {
                 try {
                     serverSocket = new ServerSocket();
                     serverSocket.bind(new InetSocketAddress(address, port));
-                    while (true) {
+                    for (; ; ) {
                         Socket socket = serverSocket.accept();
                         sLogger.d(String.format("客户端(%d)连入...", hashCode()));
                         socket.setSoTimeout(timeout);
@@ -86,7 +68,21 @@ public class MicroHTTPd {
                 }
             }
         }).start();
-        sLogger.d(String.format("Server is running http://%s:%d", address, port));
+        sLogger.d(String.format("服务器正在运行: http://%s:%d", address, port));
+    }
+
+    /**
+     * 注册 Handler
+     *
+     * @param regex   :URI 正则表达式
+     * @param handler :处理者
+     */
+    public void register(String regex, Handler handler) {
+        if (regex.length() > 2 && "^/".equals(regex.substring(0, 2))) {
+            mDispatcher.register(regex, handler);
+        } else {
+            throw new URIRegexException(regex);
+        }
     }
 
     public static class Builder {
@@ -140,15 +136,19 @@ public class MicroHTTPd {
         }
 
         public MicroHTTPd build() {
+            // 默认绑定地址为127.0.0.1
             if (TextUtils.isEmpty(this.address)) {
                 this.address = "127.0.0.1";
             }
+            // 默认绑定端口号为5000
             if (this.port == 0) {
                 this.port = 5000;
             }
+            // 默认缓存大小为1kb
             if (this.buffSize == 0) {
                 buffSize = 1024;
             }
+            // 默认超时为30秒
             if (this.timeout == 0) {
                 this.timeout = 1000 * 30;
             }
