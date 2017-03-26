@@ -15,13 +15,13 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
-class SocketRunnable implements Runnable {
-    private static final Logger sLogger = Logger.getLogger(MicroHTTPd.class);
+class HandleClientRunnable implements Runnable {
+    private static final Logger sLogger = Logger.getLogger(MicroHTTPdImpl.class);
     private Socket client;
     private int buffSize;
     private RequestsDispatcher mDispatcher;
 
-    SocketRunnable(RequestsDispatcher dispatcher, Socket client, int buffSize) {
+    HandleClientRunnable(RequestsDispatcher dispatcher, Socket client, int buffSize) {
         this.mDispatcher = dispatcher;
         this.client = client;
         this.buffSize = buffSize;
