@@ -66,7 +66,7 @@ class SocketRunnable implements Runnable {
             quietClose(buffInOut);
             quietClose(in);
             quietClose(response);
-            sLogger.d(String.format("客户端(%d)断开...", hashCode()));
+            sLogger.d(String.format("Client (%d) disconnect...", client.hashCode()));
         }
     }
 

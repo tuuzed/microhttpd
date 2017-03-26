@@ -50,10 +50,10 @@ public class MicroHTTPd {
                     serverSocket = new ServerSocket();
                     serverSocket.bind(new InetSocketAddress(address, port));
                     for (; ; ) {
-                        Socket socket = serverSocket.accept();
-                        sLogger.d(String.format("客户端(%d)连入...", hashCode()));
-                        socket.setSoTimeout(timeout);
-                        mDispatcher.dispatch(socket);
+                        Socket client = serverSocket.accept();
+                        sLogger.d(String.format("Client (%d) connected...", client.hashCode()));
+                        client.setSoTimeout(timeout);
+                        mDispatcher.dispatch(client);
                     }
                 } catch (IOException e) {
                     sLogger.e(e);
@@ -68,7 +68,7 @@ public class MicroHTTPd {
                 }
             }
         }).start();
-        sLogger.d(String.format("服务器正在运行: http://%s:%d", address, port));
+        sLogger.d(String.format("Server is running at : http://%s:%d", address, port));
     }
 
     /**

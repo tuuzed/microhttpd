@@ -11,28 +11,30 @@ import java.io.IOException;
  * Http请求处理
  */
 public class HttpHandler implements Handler {
+
+
     private final static Logger sLogger = Logger.getLogger(StaticFileHandler.class);
 
     @Override
     public void serve(Request request, Response response) throws IOException {
-        sLogger.d("接收到请求..." + request.toString());
-        if ("GET".equals(request.getMethod())) {
+        sLogger.d("Receive request..." + request.toString());
+        if (Request.GET.equals(request.getMethod())) {
             doGet(request, response);
-        } else if ("POST".equals(request.getMethod())) {
+        } else if (Request.POST.equals(request.getMethod())) {
             doPost(request, response);
-        } else if ("PUT".equals(request.getMethod())) {
+        } else if (Request.PUT.equals(request.getMethod())) {
             doPut(request, response);
-        } else if ("DELETE".equals(request.getMethod())) {
+        } else if (Request.DELETE.equals(request.getMethod())) {
             doDelete(request, response);
-        } else if ("PATCH".equals(request.getMethod())) {
+        } else if (Request.PATCH.equals(request.getMethod())) {
             doPatch(request, response);
-        } else if ("HEAD".equals(request.getMethod())) {
+        } else if (Request.HEAD.equals(request.getMethod())) {
             doHead(request, response);
-        } else if ("CONNECT".equals(request.getMethod())) {
+        } else if (Request.CONNECT.equals(request.getMethod())) {
             doConnect(request, response);
-        } else if ("OPTIONS".equals(request.getMethod())) {
+        } else if (Request.OPTIONS.equals(request.getMethod())) {
             doOptions(request, response);
-        } else if ("TRACE".equals(request.getMethod())) {
+        } else if (Request.TRACE.equals(request.getMethod())) {
             doTrace(request, response);
         } else {
             response405(response);

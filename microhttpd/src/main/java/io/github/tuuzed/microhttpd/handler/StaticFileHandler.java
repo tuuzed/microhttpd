@@ -27,7 +27,7 @@ public class StaticFileHandler implements Handler {
 
     @Override
     public void serve(Request request, Response response) throws IOException {
-        sLogger.d("接收到请求..." + request.toString());
+        sLogger.d("Receive request..." + request.toString());
         String uri = request.getUri();
         // ^/static/.*  => /static/
         // ^/.*         => /
@@ -57,7 +57,7 @@ public class StaticFileHandler implements Handler {
                 // 查找默认首页
                 for (File f : files) {
                     if (sDefIndex.matcher(f.getName()).find() && f.isFile()) {
-                        sLogger.d("找到默认首页文件:" + f.getName());
+                        sLogger.d("Default home page:" + f.getName());
                         file = f;
                         response.addHeader("Content-Type", MimeType.getMimeType(file));
                         response.addHeader("Content-Disposition", "filename=" + file.getName());
