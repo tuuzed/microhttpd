@@ -1,10 +1,11 @@
 package io.github.tuuzed.microhttpd.example;
 
 import io.github.tuuzed.microhttpd.MicroHTTPd;
+import io.github.tuuzed.microhttpd.MicroHTTPdBuilder;
 
 public class Example {
     public static void main(String[] args) {
-        MicroHTTPd server = new MicroHTTPd.Builder()
+        MicroHTTPd server = new MicroHTTPdBuilder()
                 .setBuffSize(1024)
                 .setBindAddress("127.0.0.1")
                 .setBindPort(5000)

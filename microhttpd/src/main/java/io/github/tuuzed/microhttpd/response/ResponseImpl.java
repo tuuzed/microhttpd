@@ -30,6 +30,8 @@ public class ResponseImpl implements Response {
 
     @Override
     public void write(InputStream in) throws IOException {
+        // 检查客户端是否已经断开连接
+        if (mClient.isClosed()) return;
         byte[] bytes;
         int available = in.available();
         if (available < 1024) {
@@ -49,6 +51,8 @@ public class ResponseImpl implements Response {
 
     @Override
     public void write(File file) throws IOException {
+        // 检查客户端是否已经断开连接
+        if (mClient.isClosed()) return;
         if (!file.exists()) {
             // 文件不存在
             setStatus(Status.STATUS_404);
@@ -71,12 +75,16 @@ public class ResponseImpl implements Response {
 
     @Override
     public void write(byte[] bytes) throws IOException {
+        // 检查客户端是否已经断开连接
+        if (mClient.isClosed()) return;
         writeHeader();
         mOut.write(bytes);
     }
 
     @Override
     public void write(String str) throws IOException {
+        // 检查客户端是否已经断开连接
+        if (mClient.isClosed()) return;
         write(str.getBytes());
     }
 
@@ -109,6 +117,8 @@ public class ResponseImpl implements Response {
 
     // 写入头部
     private void writeHeader() throws IOException {
+        // 检查客户端是否已经断开连接
+        if (mClient.isClosed()) return;
         mOut = mClient.getOutputStream();
         if (!isWriteHeader) {
             mOut.write((String.format("HTTP/1.1 %s\r\n", mStatus.toString())).getBytes());
