@@ -2,6 +2,8 @@ package io.github.tuuzed.microhttpd;
 
 import io.github.tuuzed.microhttpd.handler.Handler;
 
+import java.io.IOException;
+
 public interface MicroHTTPd {
 
     /**
@@ -15,6 +17,10 @@ public interface MicroHTTPd {
     /**
      * 开始监听
      */
-    void listen();
+    void listen() throws IOException;
 
+    /**
+     * 停止
+     */
+    void stop();
 }

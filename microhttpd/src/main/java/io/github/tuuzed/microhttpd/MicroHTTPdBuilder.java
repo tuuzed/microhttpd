@@ -65,9 +65,9 @@ public class MicroHTTPdBuilder {
         if (this.buffSize == 0) {
             buffSize = 1024;
         }
-        // 默认超时为5秒
+        // 默认超时为3秒
         if (this.timeout == 0) {
-            this.timeout = 1000 * 5;
+            this.timeout = 1000 * 3;
         }
         return new MicroHTTPdImpl(this);
     }

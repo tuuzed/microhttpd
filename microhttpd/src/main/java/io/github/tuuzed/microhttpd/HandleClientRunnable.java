@@ -6,10 +6,10 @@ import io.github.tuuzed.microhttpd.request.RequestImpl;
 import io.github.tuuzed.microhttpd.response.Response;
 import io.github.tuuzed.microhttpd.response.ResponseImpl;
 import io.github.tuuzed.microhttpd.response.Status;
+import io.github.tuuzed.microhttpd.util.CloseableUtils;
 import io.github.tuuzed.microhttpd.util.Logger;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -63,21 +63,11 @@ class HandleClientRunnable implements Runnable {
         } catch (IOException e) {
             sLogger.e(e);
         } finally {
-            quietClose(buffInOut);
-            quietClose(in);
-            quietClose(response);
+            CloseableUtils.quietClose(buffInOut);
+            CloseableUtils.quietClose(in);
+            CloseableUtils.quietClose(response);
             sLogger.d(String.format("Client (%d) disconnect...", client.hashCode()));
         }
     }
 
-    // 静默关闭可关闭的对象
-    private static void quietClose(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                sLogger.e(e);
-            }
-        }
-    }
 }
