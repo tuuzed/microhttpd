@@ -29,8 +29,8 @@ public class Logger {
     public void e(Throwable throwable) {
         if (debug) {
             throwable.printStackTrace();
-            System.err.printf("[ERROR:] %s => %s%n", clazzName, throwable.toString());
         }
+        System.err.printf("[ERROR:] %s => %s%n", clazzName, throwable.toString());
     }
 
     public void d(String msg) {
@@ -42,7 +42,7 @@ public class Logger {
     public void d(Throwable throwable) {
         if (debug) {
             throwable.printStackTrace();
-            System.out.printf("[DEBUG:] %s => %s%n", clazzName, throwable.toString());
         }
+        System.out.printf("[DEBUG:] %s => %s%n", clazzName, throwable.toString());
     }
 }

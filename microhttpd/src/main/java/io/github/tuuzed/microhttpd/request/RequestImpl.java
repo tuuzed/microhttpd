@@ -3,8 +3,6 @@ package io.github.tuuzed.microhttpd.request;
 import io.github.tuuzed.microhttpd.util.Logger;
 import io.github.tuuzed.microhttpd.util.TextUtils;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -96,17 +94,6 @@ public class RequestImpl implements Request {
             }
         }
         return new RequestImpl(method, uri, protocol, header, params, data);
-    }
-
-    // 静默关闭可关闭的对象
-    private static void quietClose(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                sLogger.e(e);
-            }
-        }
     }
 
     private RequestImpl(String method,

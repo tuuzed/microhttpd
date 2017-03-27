@@ -1,5 +1,6 @@
 package io.github.tuuzed.microhttpd.response;
 
+import io.github.tuuzed.microhttpd.util.CloseableUtils;
 import io.github.tuuzed.microhttpd.util.Logger;
 import io.github.tuuzed.microhttpd.util.MimeType;
 
@@ -100,8 +101,8 @@ public class ResponseImpl implements Response {
 
     @Override
     public void close() throws IOException {
-        quietClose(mOut);
-        quietClose(mClient);
+        CloseableUtils.quietClose(mOut);
+        CloseableUtils.quietClose(mClient);
     }
 
     /**
@@ -129,17 +130,6 @@ public class ResponseImpl implements Response {
             mOut.write(sb.toString().getBytes());
             mOut.write("\r\n".getBytes());
             isWriteHeader = true;
-        }
-    }
-
-    // 静默关闭可关闭的对象
-    private static void quietClose(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
