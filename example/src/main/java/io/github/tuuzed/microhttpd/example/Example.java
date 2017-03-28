@@ -9,7 +9,6 @@ public class Example {
     public static void main(String[] args) {
         MicroHTTPd server = new MicroHTTPdBuilder()
                 .setBuffSize(1024)
-                .setBindAddress("127.0.0.1")
                 .setBindPort(5000)
                 .setTimeout(1000 * 3)
                 .setStaticPath("D:\\")

@@ -1,9 +1,6 @@
 package io.github.tuuzed.microhttpd;
 
-import io.github.tuuzed.microhttpd.util.TextUtils;
-
 public class MicroHTTPdBuilder {
-    String address;
     int port;
     int threadNumber;
     int buffSize;
@@ -11,11 +8,6 @@ public class MicroHTTPdBuilder {
     String staticPath;
     String staticUriRegex;
     boolean debug;
-
-    public MicroHTTPdBuilder setBindAddress(String address) {
-        this.address = address;
-        return this;
-    }
 
     public MicroHTTPdBuilder setBindPort(int port) {
         this.port = port;
@@ -53,10 +45,6 @@ public class MicroHTTPdBuilder {
     }
 
     public MicroHTTPd build() {
-        // 默认绑定地址为127.0.0.1
-        if (TextUtils.isEmpty(this.address)) {
-            this.address = "127.0.0.1";
-        }
         // 默认绑定端口号为5000
         if (this.port == 0) {
             this.port = 5000;
