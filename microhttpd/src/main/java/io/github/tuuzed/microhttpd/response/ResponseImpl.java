@@ -2,7 +2,6 @@ package io.github.tuuzed.microhttpd.response;
 
 import io.github.tuuzed.microhttpd.util.CloseableUtils;
 import io.github.tuuzed.microhttpd.util.Logger;
-import io.github.tuuzed.microhttpd.util.MimeType;
 
 import java.io.*;
 import java.net.Socket;
@@ -63,9 +62,6 @@ public class ResponseImpl implements Response {
             setStatus(Status.STATUS_403);
             write(Status.STATUS_403.toString());
         } else {
-            setContentType(MimeType.getMimeType(file));
-            addHeader("Content-Disposition", "filename=" + file.getName());
-            setStatus(Status.STATUS_200);
             if (file.length() > 0) {
                 write(new FileInputStream(file));
             } else {

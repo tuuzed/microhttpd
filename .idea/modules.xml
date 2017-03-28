@@ -11,6 +11,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" group="microhttpd" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_main.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_main.iml" group="microhttpd" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_test.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_test.iml" group="microhttpd" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" group="staticfile" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile_main.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile_main.iml" group="staticfile" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile_test.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile_test.iml" group="staticfile" />
     </modules>
   </component>
 </project>
