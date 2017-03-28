@@ -18,6 +18,8 @@
       <module name="mircohttpd_main" target="1.7" />
       <module name="MircoHTTPd_test" target="1.7" />
       <module name="mircohttpd_test" target="1.7" />
+      <module name="staticfile_main" target="1.7" />
+      <module name="staticfile_test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

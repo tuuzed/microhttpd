@@ -1,4 +1,4 @@
-package io.github.tuuzed.microhttpd.util;
+package io.github.tuuzed.microhttpd.staticfile;
 
 import java.io.File;
 import java.util.HashMap;
