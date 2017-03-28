@@ -1,11 +1,11 @@
-package io.github.tuuzed.microhttpd.handler;
+package io.github.tuuzed.microhttpd.staticfile;
 
 
+import io.github.tuuzed.microhttpd.handler.Handler;
 import io.github.tuuzed.microhttpd.request.Request;
 import io.github.tuuzed.microhttpd.response.Response;
 import io.github.tuuzed.microhttpd.response.Status;
 import io.github.tuuzed.microhttpd.util.Logger;
-import io.github.tuuzed.microhttpd.util.MimeType;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +20,13 @@ public class StaticFileHandler implements Handler {
     private String uriRegex;
     private String staticDir;
 
-    public StaticFileHandler(String uriRegex, File file) {
+    public StaticFileHandler(String uriRegex, String staticDir) {
+        this(uriRegex, new File(staticDir));
+    }
+
+    public StaticFileHandler(String uriRegex, File staticDir) {
         this.uriRegex = uriRegex;
-        this.staticDir = file.getAbsolutePath();
+        this.staticDir = staticDir.getAbsolutePath();
     }
 
     @Override

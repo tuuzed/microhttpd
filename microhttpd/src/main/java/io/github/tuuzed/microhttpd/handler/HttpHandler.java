@@ -11,9 +11,7 @@ import java.io.IOException;
  * Http请求处理
  */
 public class HttpHandler implements Handler {
-
-
-    private final static Logger sLogger = Logger.getLogger(StaticFileHandler.class);
+    private final static Logger sLogger = Logger.getLogger(HttpHandler.class);
 
     @Override
     public void serve(Request request, Response response) throws IOException {

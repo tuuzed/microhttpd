@@ -5,8 +5,6 @@ public class MicroHTTPdBuilder {
     int threadNumber;
     int buffSize;
     int timeout;
-    String staticPath;
-    String staticUriRegex;
     boolean debug;
 
     public MicroHTTPdBuilder setBindPort(int port) {
@@ -31,16 +29,6 @@ public class MicroHTTPdBuilder {
 
     public MicroHTTPdBuilder setDebug(boolean debug) {
         this.debug = debug;
-        return this;
-    }
-
-    public MicroHTTPdBuilder setStaticPath(String staticPath) {
-        this.staticPath = staticPath;
-        return this;
-    }
-
-    public MicroHTTPdBuilder setStaticUriRegex(String staticUriRegex) {
-        this.staticUriRegex = staticUriRegex;
         return this;
     }
 

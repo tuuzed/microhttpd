@@ -2,7 +2,6 @@ package io.github.tuuzed.microhttpd.response;
 
 import io.github.tuuzed.microhttpd.util.CloseableUtils;
 import io.github.tuuzed.microhttpd.util.Logger;
-import io.github.tuuzed.microhttpd.util.MimeType;
 
 import java.io.*;
 import java.net.Socket;
