@@ -19,9 +19,10 @@ class MicroHTTPdImpl implements MicroHTTPd {
 
     MicroHTTPdImpl(MicroHTTPdBuilder builder) {
         Logger.setDebug(builder.debug);
+        Logger.setStacktrace(builder.stacktrace);
         this.mPort = builder.port;
         this.mTimeout = builder.timeout;
-        mDispatcher = new RequestsDispatcher(builder.threadNumber, builder.buffSize);
+        mDispatcher = new RequestsDispatcher(builder.threadNumber);
     }
 
     @Override
@@ -29,7 +30,7 @@ class MicroHTTPdImpl implements MicroHTTPd {
         mServerSocket = new ServerSocket();
         mServerSocket.bind(new InetSocketAddress(mPort));
         new Thread(new ServerListenRunnable(mServerSocket, mDispatcher, mTimeout)).start();
-        sLogger.d("Server is running");
+        sLogger.d("Server is running at http://127.0.0.1:" + mPort);
     }
 
     @Override

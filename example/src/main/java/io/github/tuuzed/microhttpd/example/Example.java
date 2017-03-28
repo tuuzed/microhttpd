@@ -10,6 +10,7 @@ public class Example {
     public static void main(String[] args) {
         MicroHTTPd server = new MicroHTTPdBuilder()
                 .setBindPort(5000)
+                .setDebug(true)
                 .build();
         server.register("^/static/.*", new StaticFileHandler("^/static/.*", "D:\\"));
         server.register("^/index$", new IndexHttpHandler());

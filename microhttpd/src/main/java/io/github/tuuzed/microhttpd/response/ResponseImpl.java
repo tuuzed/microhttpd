@@ -20,6 +20,9 @@ public class ResponseImpl implements Response {
     private Socket mClient;
     private OutputStream mOut;
 
+    private static final int BUF_SIZE = 1024;
+
+
     public ResponseImpl(Socket client) {
         mClient = client;
         isWriteHeader = false;
@@ -34,13 +37,13 @@ public class ResponseImpl implements Response {
         if (mClient.isClosed()) return;
         byte[] bytes;
         int available = in.available();
-        if (available < 1024) {
+        if (available < BUF_SIZE) {
             bytes = new byte[available];
         } else {
-            bytes = new byte[1024];
+            bytes = new byte[BUF_SIZE];
         }
         while ((available = in.available()) != 0) {
-            if (available < 1024) {
+            if (available < BUF_SIZE) {
                 bytes = new byte[available];
             }
             int read = in.read(bytes);

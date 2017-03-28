@@ -13,18 +13,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.Arrays;
 
 class HandleClientRunnable implements Runnable {
     private static final Logger sLogger = Logger.getLogger(MicroHTTPdImpl.class);
     private Socket client;
-    private int buffSize;
+    private static final int BUF_SIZE = 1024;
     private RequestsDispatcher mDispatcher;
 
-    HandleClientRunnable(RequestsDispatcher dispatcher, Socket client, int buffSize) {
+    HandleClientRunnable(RequestsDispatcher dispatcher, Socket client) {
         this.mDispatcher = dispatcher;
         this.client = client;
-        this.buffSize = buffSize;
     }
 
     @Override
@@ -36,12 +34,18 @@ class HandleClientRunnable implements Runnable {
         try {
             in = client.getInputStream();
             buffInOut = new ByteArrayOutputStream();
-            byte[] buf = new byte[buffSize];
+            byte[] buf = new byte[BUF_SIZE];
             int read = in.read(buf);
+            for (int i = read; i < BUF_SIZE; i++) {
+                buf[i] = (byte) 0;
+            }
             buffInOut.write(buf);
             while (in.available() != 0) {
-                Arrays.fill(buf, (byte) 0);
                 read = in.read(buf);
+                // 缓存区中的数据未被刷新的全部填充为0
+                for (int i = read; i < BUF_SIZE; i++) {
+                    buf[i] = (byte) 0;
+                }
                 buffInOut.write(buf);
             }
             Request request = RequestImpl.getRequest(buffInOut.toByteArray());
