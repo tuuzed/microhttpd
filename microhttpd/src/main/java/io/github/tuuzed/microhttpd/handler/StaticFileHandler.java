@@ -42,6 +42,7 @@ public class StaticFileHandler implements Handler {
             // 存在且是一个文件
             response.setStatus(Status.STATUS_200);
             response.addHeader("Content-Length", String.valueOf(file.length()));
+            response.addHeader("Content-Disposition", "inline; filename=" + file.getName());
             response.write(file);
         } else if ("/".equals(uri.substring(uri.length() - 1)) && file.isDirectory()) {
             // URI定位的是一个文件夹且这个文件夹存在
@@ -60,7 +61,7 @@ public class StaticFileHandler implements Handler {
                         sLogger.d("Default home page:" + f.getName());
                         file = f;
                         response.addHeader("Content-Type", MimeType.getMimeType(file));
-                        response.addHeader("Content-Disposition", "filename=" + file.getName());
+                        response.addHeader("Content-Disposition", "inline; filename=" + file.getName());
                         response.setStatus(Status.STATUS_200);
                         if (file.length() > 0) {
                             response.addHeader("Content-Length", String.valueOf(file.length()));

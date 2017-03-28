@@ -14,7 +14,7 @@ public class Example {
                 .setTimeout(1000 * 3)
                 .setStaticPath("D:\\")
                 .setStaticUriRegex("^/.*")
-                .setDebug(false)
+                .setDebug(true)
                 .build();
         server.register("^/index$", new IndexHttpHandler());
         try {
@@ -22,11 +22,5 @@ public class Example {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            Thread.sleep(1000 * 10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        server.stop();
     }
 }

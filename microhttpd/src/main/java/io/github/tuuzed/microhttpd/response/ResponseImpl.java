@@ -63,9 +63,6 @@ public class ResponseImpl implements Response {
             setStatus(Status.STATUS_403);
             write(Status.STATUS_403.toString());
         } else {
-            setContentType(MimeType.getMimeType(file));
-            addHeader("Content-Disposition", "filename=" + file.getName());
-            setStatus(Status.STATUS_200);
             if (file.length() > 0) {
                 write(new FileInputStream(file));
             } else {
