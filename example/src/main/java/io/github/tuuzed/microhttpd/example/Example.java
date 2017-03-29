@@ -15,7 +15,7 @@ public class Example {
         server.register("^/static/.*", new StaticFileHandler("^/static/.*", "D:\\"));
         server.register("^/index$", new IndexHttpHandler());
         try {
-            server.listen();
+            server.startup();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -3,21 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" filepath="$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" filepath="$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MicroHTTPd_main.iml" filepath="$PROJECT_DIR$/.idea/modules/MicroHTTPd_main.iml" group="MicroHTTPd" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MicroHTTPd_test.iml" filepath="$PROJECT_DIR$/.idea/modules/MicroHTTPd_test.iml" group="MicroHTTPd" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example.iml" group="example" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example_main.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example_main.iml" group="example" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example_test.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example_test.iml" group="example" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" group="microhttpd" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_main.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_main.iml" group="microhttpd" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_test.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd_test.iml" group="microhttpd" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" group="staticfile" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile_main.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile_main.iml" group="staticfile" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile_test.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile_test.iml" group="staticfile" />
     </modules>
   </component>
 </project>
