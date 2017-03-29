@@ -19,17 +19,18 @@ class MicroHTTPdImpl implements MicroHTTPd {
 
     MicroHTTPdImpl(MicroHTTPdBuilder builder) {
         Logger.setDebug(builder.debug);
+        Logger.setStacktrace(builder.stacktrace);
         this.mPort = builder.port;
         this.mTimeout = builder.timeout;
-        mDispatcher = new RequestsDispatcher(builder.threadNumber, builder.buffSize);
+        mDispatcher = new RequestsDispatcher(builder.threadNumber);
     }
 
     @Override
-    public void listen() throws IOException {
+    public void startup() throws IOException {
         mServerSocket = new ServerSocket();
         mServerSocket.bind(new InetSocketAddress(mPort));
         new Thread(new ServerListenRunnable(mServerSocket, mDispatcher, mTimeout)).start();
-        sLogger.d("Server is running");
+        sLogger.d("Server is running at http://localhost:" + mPort);
     }
 
     @Override

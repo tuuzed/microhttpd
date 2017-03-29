@@ -22,6 +22,7 @@ class ServerListenRunnable implements Runnable {
     public void run() {
         try {
             while (!mServerSocket.isClosed()) {
+                sLogger.d("accepting...");
                 Socket client = mServerSocket.accept();
                 sLogger.d(String.format("Client (%d) connected...", client.hashCode()));
                 client.setSoTimeout(timeout);

@@ -2,14 +2,15 @@ package io.github.tuuzed.microhttpd.util;
 
 public class Logger {
     private static boolean debug;
+    private static boolean stacktrace;
     private String clazzName;
 
     public static void setDebug(boolean debug) {
         Logger.debug = debug;
     }
 
-    public static boolean isDebug() {
-        return debug;
+    public static void setStacktrace(boolean stacktrace) {
+        Logger.stacktrace = stacktrace;
     }
 
     public Logger(String clazzName) {
@@ -27,7 +28,7 @@ public class Logger {
     }
 
     public void e(Throwable throwable) {
-        if (debug) {
+        if (stacktrace) {
             throwable.printStackTrace();
         }
         System.err.printf("[ERROR:] %s => %s%n", clazzName, throwable.toString());
@@ -40,7 +41,7 @@ public class Logger {
     }
 
     public void d(Throwable throwable) {
-        if (debug) {
+        if (stacktrace) {
             throwable.printStackTrace();
         }
         System.out.printf("[DEBUG:] %s => %s%n", clazzName, throwable.toString());

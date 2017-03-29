@@ -55,8 +55,10 @@ public class StaticFileHandler implements Handler {
                 // 空文件夹
                 response.setStatus(Status.STATUS_200);
                 response.setContentType("text/html; charset=utf-8");
-                // 返回上级目录
-                response.write("<a href=\"../\">../</a><br/>");
+                if (!file.getAbsolutePath().equals(staticDir)) {
+                    // 返回上级目录
+                    response.write("<a href=\"../\">../</a><br/>");
+                }
             } else {
                 // 不是空文件夹
                 // 查找默认首页
@@ -80,8 +82,10 @@ public class StaticFileHandler implements Handler {
                 if (file.isDirectory()) {
                     response.setStatus(Status.STATUS_200);
                     response.setContentType("text/html; charset=utf-8");
-                    // 返回上级目录
-                    response.write("<a href=\"../\">../</a><br/>");
+                    if (!file.getAbsolutePath().equals(staticDir)) {
+                        // 返回上级目录
+                        response.write("<a href=\"../\">../</a><br/>");
+                    }
                     for (File f : files) {
                         if (f.isDirectory()) {
                             response.write(String.format("<a href=\"./%s/\">%s/</a><br/>",
