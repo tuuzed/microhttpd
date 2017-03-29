@@ -15,9 +15,9 @@ public interface MicroHTTPd {
     void register(String regex, Handler handler);
 
     /**
-     * 开始监听
+     * 启动
      */
-    void listen() throws IOException;
+    void startup() throws IOException;
 
     /**
      * 停止

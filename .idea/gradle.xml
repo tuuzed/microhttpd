@@ -15,7 +15,7 @@
             <option value="$PROJECT_DIR$/staticfile" />
           </set>
         </option>
-        <option name="useAutoImport" value="true" />
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

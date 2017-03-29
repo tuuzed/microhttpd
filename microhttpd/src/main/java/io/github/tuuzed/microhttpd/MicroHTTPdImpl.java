@@ -26,11 +26,11 @@ class MicroHTTPdImpl implements MicroHTTPd {
     }
 
     @Override
-    public void listen() throws IOException {
+    public void startup() throws IOException {
         mServerSocket = new ServerSocket();
         mServerSocket.bind(new InetSocketAddress(mPort));
         new Thread(new ServerListenRunnable(mServerSocket, mDispatcher, mTimeout)).start();
-        sLogger.d("Server is running at http://127.0.0.1:" + mPort);
+        sLogger.d("Server is running at http://localhost:" + mPort);
     }
 
     @Override

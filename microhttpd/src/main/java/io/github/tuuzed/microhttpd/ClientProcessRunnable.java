@@ -14,13 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
-class HandleClientRunnable implements Runnable {
+class ClientProcessRunnable implements Runnable {
     private static final Logger sLogger = Logger.getLogger(MicroHTTPdImpl.class);
     private Socket client;
     private static final int BUF_SIZE = 1024;
     private RequestsDispatcher mDispatcher;
 
-    HandleClientRunnable(RequestsDispatcher dispatcher, Socket client) {
+    ClientProcessRunnable(RequestsDispatcher dispatcher, Socket client) {
         this.mDispatcher = dispatcher;
         this.client = client;
     }

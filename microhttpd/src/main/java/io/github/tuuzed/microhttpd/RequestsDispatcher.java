@@ -32,7 +32,7 @@ class RequestsDispatcher {
     }
 
     void dispatch(Socket socket) {
-        mThreadPool.execute(new HandleClientRunnable(this, socket));
+        mThreadPool.execute(new ClientProcessRunnable(this, socket));
     }
 
     Handler getHandler(String uri) {

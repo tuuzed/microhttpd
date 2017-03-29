@@ -1,12 +1,12 @@
 package io.github.tuuzed.microhttpd.request;
 
-import io.github.tuuzed.microhttpd.util.Logger;
-import io.github.tuuzed.microhttpd.util.TextUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.github.tuuzed.microhttpd.util.Logger;
+import io.github.tuuzed.microhttpd.util.TextUtils;
 
 /**
  * HTTP请求
@@ -20,7 +20,6 @@ public class RequestImpl implements Request {
     private Map<String, String> header;
     private Map<String, String> params;
     private Map<String, String> data;
-
 
     public static Request getRequest(byte[] bytes) {
         String encoding = "utf-8";
