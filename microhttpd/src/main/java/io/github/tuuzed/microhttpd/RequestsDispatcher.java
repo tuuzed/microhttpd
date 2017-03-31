@@ -1,7 +1,5 @@
 package io.github.tuuzed.microhttpd;
 
-import io.github.tuuzed.microhttpd.handler.Handler;
-
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,14 +8,18 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.tuuzed.microhttpd.handler.Handler;
+
 /**
  * 请求调度器
  */
 class RequestsDispatcher {
     private Map<Pattern, Handler> mHandlerMap;
     private ExecutorService mThreadPool;
+    private int mBufSize;
 
-    RequestsDispatcher(int threadNumber) {
+    
+    RequestsDispatcher(int threadNumber, int bufSize) {
         mHandlerMap = new HashMap<>();
         // 未指定线程数量则使用可缓存的线程池
         if (threadNumber == 0) {
@@ -25,19 +27,37 @@ class RequestsDispatcher {
         } else {
             mThreadPool = Executors.newFixedThreadPool(threadNumber);
         }
+        mBufSize = bufSize;
     }
 
-    void register(String regex, Handler handler) {
-        mHandlerMap.put(Pattern.compile(regex), handler);
+    /**
+     * 注册Handler
+     *
+     * @param route:路由
+     * @param handler:处理者
+     */
+    void register(String route, Handler handler) {
+        mHandlerMap.put(Pattern.compile(route), handler);
     }
 
-    void dispatch(Socket socket) {
-        mThreadPool.execute(new ClientProcessRunnable(this, socket));
+    /**
+     * 调度
+     *
+     * @param client:客户端连接Socket对象
+     */
+    void dispatch(Socket client) {
+        mThreadPool.execute(new ClientProcessRunnable(this, client, mBufSize));
     }
 
-    Handler getHandler(String uri) {
+    /**
+     * 获取处理者
+     *
+     * @param url:URL
+     * @return :如果获取不到相应的处理器则返回null
+     */
+    Handler getHandler(String url) {
         for (Map.Entry<Pattern, Handler> entry : mHandlerMap.entrySet()) {
-            Matcher matcher = entry.getKey().matcher(uri);
+            Matcher matcher = entry.getKey().matcher(url);
             if (matcher.find()) {
                 return entry.getValue();
             }

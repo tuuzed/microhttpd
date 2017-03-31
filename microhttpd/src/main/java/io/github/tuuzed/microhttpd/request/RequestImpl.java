@@ -15,7 +15,7 @@ public class RequestImpl implements Request {
     private static final Logger sLogger = Logger.getLogger(RequestImpl.class);
 
     private String method;
-    private String uri;
+    private String url;
     private String protocol;
     private Map<String, String> header;
     private Map<String, String> params;
@@ -31,7 +31,7 @@ public class RequestImpl implements Request {
         Map<String, String> params = new HashMap<>();
         Map<String, String> data = new HashMap<>();
         String method = null;
-        String uri = null;
+        String url = null;
         String protocol = null;
         StringBuilder body = new StringBuilder();
         for (int i = 0; i < rawArray.length; i++) {
@@ -45,17 +45,17 @@ public class RequestImpl implements Request {
                     return null;
                 }
                 method = split[0];
-                uri = split[1];
+                url = split[1];
                 protocol = split[2];
                 // 存在空字符则不符合协议
-                if (TextUtils.isEmpty(method) || TextUtils.isEmpty(uri) || TextUtils.isEmpty(protocol)) {
+                if (TextUtils.isEmpty(method) || TextUtils.isEmpty(url) || TextUtils.isEmpty(protocol)) {
                     return null;
                 }
                 method = method.toUpperCase();
                 // 提取 params
-                if (uri.contains("?")) {
-                    String[] split1 = uri.split("\\?");
-                    uri = split1[0];
+                if (url.contains("?")) {
+                    String[] split1 = url.split("\\?");
+                    url = split1[0];
                     for (String str : split1[1].split("&")) {
                         String[] split2 = str.split("=");
                         try {
@@ -67,7 +67,7 @@ public class RequestImpl implements Request {
                     }
                 }
                 try {
-                    uri = URLDecoder.decode(uri, encoding);
+                    url = URLDecoder.decode(url, encoding);
                 } catch (UnsupportedEncodingException e) {
                     sLogger.e(e);
                 }
@@ -92,17 +92,17 @@ public class RequestImpl implements Request {
                 data.put(split[0], split[1]);
             }
         }
-        return new RequestImpl(method, uri, protocol, header, params, data);
+        return new RequestImpl(method, url, protocol, header, params, data);
     }
 
     private RequestImpl(String method,
-                        String uri,
+                        String url,
                         String protocol,
                         Map<String, String> header,
                         Map<String, String> params,
                         Map<String, String> data) {
         this.method = method;
-        this.uri = uri;
+        this.url = url;
         this.protocol = protocol;
         this.header = header;
         this.params = params;
@@ -115,8 +115,8 @@ public class RequestImpl implements Request {
     }
 
     @Override
-    public String getUri() {
-        return uri;
+    public String getUrl() {
+        return url;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class RequestImpl implements Request {
     public String toString() {
         return "Request{" +
                 "method='" + method + '\'' +
-                ", uri='" + uri + '\'' +
+                ", url='" + url + '\'' +
                 ", protocol='" + protocol + '\'' +
                 ", header=" + header +
                 ", params=" + params +

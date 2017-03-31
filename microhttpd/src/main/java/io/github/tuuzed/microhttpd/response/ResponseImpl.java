@@ -1,12 +1,16 @@
 package io.github.tuuzed.microhttpd.response;
 
-import io.github.tuuzed.microhttpd.util.CloseableUtils;
-import io.github.tuuzed.microhttpd.util.Logger;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.github.tuuzed.microhttpd.util.CloseableUtils;
+import io.github.tuuzed.microhttpd.util.Logger;
 
 /**
  * HTTP响应
@@ -18,13 +22,12 @@ public class ResponseImpl implements Response {
     private Status mStatus;
     private Map<String, String> mHeader;
     private Socket mClient;
+    private int mBufSize;
     private OutputStream mOut;
 
-    private static final int BUF_SIZE = 1024;
-
-
-    public ResponseImpl(Socket client) {
+    public ResponseImpl(Socket client, int bufSize) {
         mClient = client;
+        mBufSize = bufSize;
         isWriteHeader = false;
         mHeader = new HashMap<>();
         mStatus = Status.STATUS_200;
@@ -37,13 +40,13 @@ public class ResponseImpl implements Response {
         if (mClient.isClosed()) return;
         byte[] bytes;
         int available = in.available();
-        if (available < BUF_SIZE) {
+        if (available < mBufSize) {
             bytes = new byte[available];
         } else {
-            bytes = new byte[BUF_SIZE];
+            bytes = new byte[mBufSize];
         }
         while ((available = in.available()) != 0) {
-            if (available < BUF_SIZE) {
+            if (available < mBufSize) {
                 bytes = new byte[available];
             }
             int read = in.read(bytes);
