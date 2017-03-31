@@ -1,14 +1,14 @@
 package io.github.tuuzed.microhttpd;
 
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+
 import io.github.tuuzed.microhttpd.exception.URIRegexException;
 import io.github.tuuzed.microhttpd.handler.Handler;
 import io.github.tuuzed.microhttpd.util.CloseableUtils;
 import io.github.tuuzed.microhttpd.util.Logger;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 
 class MicroHTTPdImpl implements MicroHTTPd {
     private static final Logger sLogger = Logger.getLogger(MicroHTTPdImpl.class);
@@ -22,7 +22,7 @@ class MicroHTTPdImpl implements MicroHTTPd {
         Logger.setStacktrace(builder.stacktrace);
         this.mPort = builder.port;
         this.mTimeout = builder.timeout;
-        mDispatcher = new RequestsDispatcher(builder.threadNumber);
+        mDispatcher = new RequestsDispatcher(builder.threadNumber, builder.bufSize);
     }
 
     @Override
@@ -39,11 +39,11 @@ class MicroHTTPdImpl implements MicroHTTPd {
     }
 
     @Override
-    public void register(String regex, Handler handler) {
-        if (regex.length() > 2 && "^/".equals(regex.substring(0, 2))) {
-            mDispatcher.register(regex, handler);
+    public void register(String route, Handler handler) {
+        if (route.length() > 2 && "^/".equals(route.substring(0, 2))) {
+            mDispatcher.register(route, handler);
         } else {
-            throw new URIRegexException(regex);
+            throw new URIRegexException(route);
         }
     }
 
