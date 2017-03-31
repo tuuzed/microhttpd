@@ -1,18 +1,18 @@
 package io.github.tuuzed.microhttpd;
 
-import io.github.tuuzed.microhttpd.handler.Handler;
-
 import java.io.IOException;
+
+import io.github.tuuzed.microhttpd.handler.Handler;
 
 public interface MicroHTTPd {
 
     /**
      * 注册 Handler
      *
-     * @param regex   :URI 正则表达式
+     * @param route   :路由(支持正则匹配)
      * @param handler :处理者
      */
-    void register(String regex, Handler handler);
+    void register(String route, Handler handler);
 
     /**
      * 启动

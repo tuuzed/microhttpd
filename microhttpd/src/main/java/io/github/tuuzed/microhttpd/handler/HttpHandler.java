@@ -1,11 +1,12 @@
 package io.github.tuuzed.microhttpd.handler;
 
+import java.io.IOException;
+
+import io.github.tuuzed.microhttpd.request.Method;
 import io.github.tuuzed.microhttpd.request.Request;
 import io.github.tuuzed.microhttpd.response.Response;
 import io.github.tuuzed.microhttpd.response.Status;
 import io.github.tuuzed.microhttpd.util.Logger;
-
-import java.io.IOException;
 
 /**
  * Http请求处理
@@ -16,23 +17,23 @@ public class HttpHandler implements Handler {
     @Override
     public void serve(Request request, Response response) throws IOException {
         sLogger.d("Receive request..." + request.toString());
-        if (Request.GET.equals(request.getMethod())) {
+        if (Method.GET.equals(request.getMethod())) {
             doGet(request, response);
-        } else if (Request.POST.equals(request.getMethod())) {
+        } else if (Method.POST.equals(request.getMethod())) {
             doPost(request, response);
-        } else if (Request.PUT.equals(request.getMethod())) {
+        } else if (Method.PUT.equals(request.getMethod())) {
             doPut(request, response);
-        } else if (Request.DELETE.equals(request.getMethod())) {
+        } else if (Method.DELETE.equals(request.getMethod())) {
             doDelete(request, response);
-        } else if (Request.PATCH.equals(request.getMethod())) {
+        } else if (Method.PATCH.equals(request.getMethod())) {
             doPatch(request, response);
-        } else if (Request.HEAD.equals(request.getMethod())) {
+        } else if (Method.HEAD.equals(request.getMethod())) {
             doHead(request, response);
-        } else if (Request.CONNECT.equals(request.getMethod())) {
+        } else if (Method.CONNECT.equals(request.getMethod())) {
             doConnect(request, response);
-        } else if (Request.OPTIONS.equals(request.getMethod())) {
+        } else if (Method.OPTIONS.equals(request.getMethod())) {
             doOptions(request, response);
-        } else if (Request.TRACE.equals(request.getMethod())) {
+        } else if (Method.TRACE.equals(request.getMethod())) {
             doTrace(request, response);
         } else {
             response405(response);

@@ -1,21 +1,21 @@
 package io.github.tuuzed.microhttpd;
 
-import io.github.tuuzed.microhttpd.util.Logger;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import io.github.tuuzed.microhttpd.util.Logger;
 
 class ServerListenRunnable implements Runnable {
     private static final Logger sLogger = Logger.getLogger(ServerListenRunnable.class);
     private RequestsDispatcher mDispatcher;
     private ServerSocket mServerSocket;
-    private int timeout;
+    private int mTimeout;
 
     ServerListenRunnable(ServerSocket serverSocket, RequestsDispatcher dispatcher, int timeout) {
-        this.mServerSocket = serverSocket;
-        this.mDispatcher = dispatcher;
-        this.timeout = timeout;
+        mServerSocket = serverSocket;
+        mDispatcher = dispatcher;
+        mTimeout = timeout;
     }
 
     @Override
@@ -25,7 +25,7 @@ class ServerListenRunnable implements Runnable {
                 sLogger.d("accepting...");
                 Socket client = mServerSocket.accept();
                 sLogger.d(String.format("Client (%d) connected...", client.hashCode()));
-                client.setSoTimeout(timeout);
+                client.setSoTimeout(mTimeout);
                 mDispatcher.dispatch(client);
             }
         } catch (IOException e) {

@@ -1,15 +1,15 @@
 package io.github.tuuzed.microhttpd.staticfile;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.util.regex.Pattern;
+
 import io.github.tuuzed.microhttpd.handler.Handler;
 import io.github.tuuzed.microhttpd.request.Request;
 import io.github.tuuzed.microhttpd.response.Response;
 import io.github.tuuzed.microhttpd.response.Status;
 import io.github.tuuzed.microhttpd.util.Logger;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.regex.Pattern;
 
 /**
  * 静态文件处理
@@ -32,10 +32,10 @@ public class StaticFileHandler implements Handler {
     @Override
     public void serve(Request request, Response response) throws IOException {
         sLogger.d("Receive request..." + request.toString());
-        String uri = request.getUri();
+        String url = request.getUrl();
         // ^/static/.*  => /static/
         // ^/.*         => /
-        String path = staticDir + File.separator + uri.replaceFirst(uriRegex.substring(1, uriRegex.length() - 2), "");
+        String path = staticDir + File.separator + url.replaceFirst(uriRegex.substring(1, uriRegex.length() - 2), "");
         sLogger.d("path =" + path);
         File file = new File(path);
         if (!file.exists()) {
@@ -48,7 +48,7 @@ public class StaticFileHandler implements Handler {
             response.addHeader("Content-Length", String.valueOf(file.length()));
             response.addHeader("Content-Disposition", "inline; filename=" + file.getName());
             response.write(file);
-        } else if ("/".equals(uri.substring(uri.length() - 1)) && file.isDirectory()) {
+        } else if ("/".equals(url.substring(url.length() - 1)) && file.isDirectory()) {
             // URI定位的是一个文件夹且这个文件夹存在
             File[] files = file.listFiles();
             if (files == null) {
