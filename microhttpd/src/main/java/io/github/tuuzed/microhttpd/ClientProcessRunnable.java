@@ -37,18 +37,10 @@ class ClientProcessRunnable implements Runnable {
             buffInOut = new ByteArrayOutputStream();
             byte[] buf = new byte[mBufSize];
             int read = in.read(buf);
-            // 缓存区中的数据未被刷新的全部填充为0
-            for (int i = read; i < mBufSize; i++) {
-                buf[i] = (byte) 0;
-            }
-            buffInOut.write(buf);
+            buffInOut.write(buf, 0, read);
             while (in.available() != 0) {
                 read = in.read(buf);
-                // 缓存区中的数据未被刷新的全部填充为0
-                for (int i = read; i < mBufSize; i++) {
-                    buf[i] = (byte) 0;
-                }
-                buffInOut.write(buf);
+                buffInOut.write(buf, 0, read);
             }
             Request request = RequestImpl.getRequest(buffInOut.toByteArray());
             if (request == null) {
