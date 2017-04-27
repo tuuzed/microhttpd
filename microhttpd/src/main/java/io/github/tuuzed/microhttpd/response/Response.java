@@ -9,11 +9,15 @@ public interface Response extends Closeable {
 
     void write(InputStream in) throws IOException;
 
+    void write(InputStream in, int bufSize) throws IOException;
+
     void write(byte[] bytes) throws IOException;
+
+    void write(byte[] bytes, int off, int len) throws IOException;
 
     void write(String str) throws IOException;
 
-    void write(File file) throws IOException;
+    void write(String str, String charsetName) throws IOException;
 
     void setStatus(Status status);
 

@@ -13,6 +13,7 @@ public class Logger {
         Logger.stacktrace = stacktrace;
     }
 
+
     public Logger(String clazzName) {
         this.clazzName = clazzName;
     }

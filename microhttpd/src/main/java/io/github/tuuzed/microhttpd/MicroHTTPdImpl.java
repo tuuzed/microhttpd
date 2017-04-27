@@ -1,14 +1,13 @@
 package io.github.tuuzed.microhttpd;
 
 
+import io.github.tuuzed.microhttpd.handler.Handler;
+import io.github.tuuzed.microhttpd.util.Logger;
+
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-
-import io.github.tuuzed.microhttpd.exception.URIRegexException;
-import io.github.tuuzed.microhttpd.handler.Handler;
-import io.github.tuuzed.microhttpd.util.CloseableUtils;
-import io.github.tuuzed.microhttpd.util.Logger;
 
 class MicroHTTPdImpl implements MicroHTTPd {
     private static final Logger sLogger = Logger.getLogger(MicroHTTPdImpl.class);
@@ -35,7 +34,7 @@ class MicroHTTPdImpl implements MicroHTTPd {
 
     @Override
     public void stop() {
-        CloseableUtils.quietClose(mServerSocket);
+        safeClose(mServerSocket);
     }
 
     @Override
@@ -43,7 +42,17 @@ class MicroHTTPdImpl implements MicroHTTPd {
         if (route.length() > 2 && "^/".equals(route.substring(0, 2))) {
             mDispatcher.register(route, handler);
         } else {
-            throw new URIRegexException(route);
+            throw new RuntimeException(String.format("uriRegex '%s' Non conformity,UriRegex needs to start '^/'!", route));
+        }
+    }
+
+    private void safeClose(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                sLogger.e(e);
+            }
         }
     }
 

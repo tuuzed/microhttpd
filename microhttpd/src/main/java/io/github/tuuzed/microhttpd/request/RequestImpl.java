@@ -72,7 +72,7 @@ public class RequestImpl implements Request {
                     sLogger.e(e);
                 }
             } else {
-                // 匹配的空行则说明Header结束
+                // 匹配到空行则说明Header结束
                 if ("".equals(s)) {
                     isEndHeader = true;
                 } else if (isEndHeader) {

@@ -1,16 +1,14 @@
 package io.github.tuuzed.microhttpd.response;
 
-import java.io.File;
-import java.io.FileInputStream;
+import io.github.tuuzed.microhttpd.util.Logger;
+
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.github.tuuzed.microhttpd.util.CloseableUtils;
-import io.github.tuuzed.microhttpd.util.Logger;
 
 /**
  * HTTP响应
@@ -22,12 +20,10 @@ public class ResponseImpl implements Response {
     private Status mStatus;
     private Map<String, String> mHeader;
     private Socket mClient;
-    private int mBufSize;
     private OutputStream mOut;
 
-    public ResponseImpl(Socket client, int bufSize) {
+    public ResponseImpl(Socket client) {
         mClient = client;
-        mBufSize = bufSize;
         isWriteHeader = false;
         mHeader = new HashMap<>();
         mStatus = Status.STATUS_200;
@@ -36,59 +32,45 @@ public class ResponseImpl implements Response {
 
     @Override
     public void write(InputStream in) throws IOException {
-        // 检查客户端是否已经断开连接
-        if (mClient.isClosed()) return;
-        byte[] bytes;
-        int available = in.available();
-        if (available < mBufSize) {
-            bytes = new byte[available];
-        } else {
-            bytes = new byte[mBufSize];
-        }
-        while ((available = in.available()) != 0) {
-            if (available < mBufSize) {
-                bytes = new byte[available];
-            }
-            int read = in.read(bytes);
-            write(bytes);
-        }
-        in.close();
+        write(in, 1024);
     }
 
     @Override
-    public void write(File file) throws IOException {
+    public void write(InputStream in, int bufSize) throws IOException {
         // 检查客户端是否已经断开连接
-        if (mClient.isClosed()) return;
-        if (!file.exists()) {
-            // 文件不存在
-            setStatus(Status.STATUS_404);
-            write(Status.STATUS_404.toString());
-        } else if (file.isDirectory()) {
-            // 是一个文件夹
-            setStatus(Status.STATUS_403);
-            write(Status.STATUS_403.toString());
-        } else {
-            if (file.length() > 0) {
-                write(new FileInputStream(file));
-            } else {
-                write("");
-            }
+        if (mClient.isClosed()) {
+            safeClose(in);
+            return;
         }
+        byte[] bytes = new byte[bufSize];
+        while (in.available() != 0) {
+            int read = in.read(bytes);
+            write(bytes, 0, read);
+        }
+        safeClose(in);
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        // 检查客户端是否已经断开连接
+        write(bytes, 0, bytes.length);
+    }
+
+    @Override
+    public void write(byte[] bytes, int off, int len) throws IOException {
         if (mClient.isClosed()) return;
         writeHeader();
-        mOut.write(bytes);
+        mOut.write(bytes, off, len);
     }
 
     @Override
     public void write(String str) throws IOException {
-        // 检查客户端是否已经断开连接
+        write(str, "utf-8");
+    }
+
+    @Override
+    public void write(String str, String charsetName) throws IOException {
         if (mClient.isClosed()) return;
-        write(str.getBytes());
+        write(str.getBytes(charsetName));
     }
 
     @Override
@@ -102,20 +84,14 @@ public class ResponseImpl implements Response {
     }
 
     @Override
-    public void close() throws IOException {
-        CloseableUtils.quietClose(mOut);
-        CloseableUtils.quietClose(mClient);
-    }
-
-    /**
-     * 添加头部信息
-     *
-     * @param key
-     * @param value
-     */
-    @Override
     public void addHeader(String key, String value) {
         mHeader.put(key, value);
+    }
+
+    @Override
+    public void close() throws IOException {
+        safeClose(mOut);
+        safeClose(mClient);
     }
 
     // 写入头部
@@ -132,6 +108,16 @@ public class ResponseImpl implements Response {
             mOut.write(sb.toString().getBytes());
             mOut.write("\r\n".getBytes());
             isWriteHeader = true;
+        }
+    }
+
+    private void safeClose(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                sLogger.e(e);
+            }
         }
     }
 }

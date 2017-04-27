@@ -1,6 +1,7 @@
 package io.github.tuuzed.microhttpd;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -11,7 +12,6 @@ import io.github.tuuzed.microhttpd.request.RequestImpl;
 import io.github.tuuzed.microhttpd.response.Response;
 import io.github.tuuzed.microhttpd.response.ResponseImpl;
 import io.github.tuuzed.microhttpd.response.Status;
-import io.github.tuuzed.microhttpd.util.CloseableUtils;
 import io.github.tuuzed.microhttpd.util.Logger;
 
 class ClientProcessRunnable implements Runnable {
@@ -28,7 +28,7 @@ class ClientProcessRunnable implements Runnable {
 
     @Override
     public void run() {
-        Response response = new ResponseImpl(mClient, mBufSize);
+        Response response = new ResponseImpl(mClient);
         InputStream in = null;
         // 一个用于缓存输入流的输出流
         ByteArrayOutputStream buffInOut = null;
@@ -36,6 +36,7 @@ class ClientProcessRunnable implements Runnable {
             in = mClient.getInputStream();
             buffInOut = new ByteArrayOutputStream();
             byte[] buf = new byte[mBufSize];
+            // 读取输入流，堵塞程序
             int read = in.read(buf);
             buffInOut.write(buf, 0, read);
             while (in.available() != 0) {
@@ -61,10 +62,20 @@ class ClientProcessRunnable implements Runnable {
         } catch (IOException e) {
             sLogger.e(e);
         } finally {
-            CloseableUtils.quietClose(buffInOut);
-            CloseableUtils.quietClose(in);
-            CloseableUtils.quietClose(response);
+            safeClose(buffInOut);
+            safeClose(in);
+            safeClose(response);
             sLogger.d(String.format("Client (%d) disconnect...", mClient.hashCode()));
+        }
+    }
+
+    private void safeClose(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                sLogger.e(e);
+            }
         }
     }
 
