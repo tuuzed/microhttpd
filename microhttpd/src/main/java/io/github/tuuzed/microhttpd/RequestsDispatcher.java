@@ -16,10 +16,9 @@ import io.github.tuuzed.microhttpd.handler.Handler;
 class RequestsDispatcher {
     private Map<Pattern, Handler> mHandlerMap;
     private ExecutorService mThreadPool;
-    private int mBufSize;
 
     
-    RequestsDispatcher(int threadNumber, int bufSize) {
+    RequestsDispatcher(int threadNumber) {
         mHandlerMap = new HashMap<>();
         // 未指定线程数量则使用可缓存的线程池
         if (threadNumber == 0) {
@@ -27,7 +26,6 @@ class RequestsDispatcher {
         } else {
             mThreadPool = Executors.newFixedThreadPool(threadNumber);
         }
-        mBufSize = bufSize;
     }
 
     /**
@@ -46,7 +44,7 @@ class RequestsDispatcher {
      * @param connect:客户端连接Socket对象
      */
     void dispatch(Socket connect) {
-        mThreadPool.execute(new ConnectionProcessor(this, connect, mBufSize));
+        mThreadPool.execute(new ConnectionProcessor(this, connect));
     }
 
     /**

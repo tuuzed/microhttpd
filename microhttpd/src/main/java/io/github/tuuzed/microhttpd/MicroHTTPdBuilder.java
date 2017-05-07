@@ -3,7 +3,6 @@ package io.github.tuuzed.microhttpd;
 public class MicroHTTPdBuilder implements Builder<MicroHTTPd> {
     int port;
     int threadNumber;
-    int bufSize;
     int timeout;
     String prefix;
     String path;
@@ -18,11 +17,6 @@ public class MicroHTTPdBuilder implements Builder<MicroHTTPd> {
 
     public MicroHTTPdBuilder setFixedThreadNumber(int threadNumber) {
         this.threadNumber = threadNumber;
-        return this;
-    }
-
-    public MicroHTTPdBuilder setBufSize(int bufSize) {
-        this.bufSize = bufSize;
         return this;
     }
 
@@ -53,10 +47,6 @@ public class MicroHTTPdBuilder implements Builder<MicroHTTPd> {
         // 默认绑定端口号为5000
         if (this.port == 0) {
             this.port = 5000;
-        }
-        // 默认缓存为1kb
-        if (this.bufSize == 0) {
-            this.bufSize = 1024;
         }
         // 默认超时为3秒
         if (this.timeout == 0) {

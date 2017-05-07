@@ -23,7 +23,7 @@ class MicroHTTPdImpl implements MicroHTTPd {
         Logger.setStacktrace(builder.stacktrace);
         this.mPort = builder.port;
         this.mTimeout = builder.timeout;
-        this.mDispatcher = new RequestsDispatcher(builder.threadNumber, builder.bufSize);
+        this.mDispatcher = new RequestsDispatcher(builder.threadNumber);
         if (!TextUtils.isEmpty(builder.prefix) && builder.prefix.startsWith("^/")) {
             register(builder.prefix,
                     new StaticFileHandler(builder.prefix, builder.path));
