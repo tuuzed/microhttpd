@@ -1,6 +1,7 @@
 package io.github.tuuzed.microhttpd.handler;
 
 import java.io.IOException;
+import java.util.Date;
 
 import io.github.tuuzed.microhttpd.request.Method;
 import io.github.tuuzed.microhttpd.request.Request;
@@ -36,7 +37,7 @@ public class HttpHandler implements Handler {
         } else if (Method.TRACE.equals(request.getMethod())) {
             doTrace(request, response);
         } else {
-            response405(response);
+            response.renderError(Status.STATUS_405);
         }
     }
 
@@ -48,7 +49,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doGet(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -59,7 +61,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doPost(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -70,7 +73,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doPut(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -81,7 +85,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doDelete(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -92,7 +97,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doPatch(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -103,7 +109,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doHead(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -114,7 +121,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doConnect(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -125,7 +133,8 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doOptions(Request request, Response response) throws IOException {
-        response405(response);
+        response.renderError(Status.STATUS_405);
+
     }
 
     /**
@@ -136,12 +145,6 @@ public class HttpHandler implements Handler {
      * @throws IOException :遇到异常时抛出
      */
     public void doTrace(Request request, Response response) throws IOException {
-        response405(response);
-    }
-
-    // 响应405，方法未允许
-    private void response405(Response response) throws IOException {
-        response.setStatus(Status.STATUS_405);
-        response.write(Status.STATUS_405.toString());
+        response.renderError(Status.STATUS_405);
     }
 }

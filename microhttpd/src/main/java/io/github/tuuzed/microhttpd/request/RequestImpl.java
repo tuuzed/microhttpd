@@ -26,6 +26,7 @@ public class RequestImpl implements Request {
         String rawRequest = new String(bytes).trim();
         sLogger.d("rawRequest:\n" + rawRequest);
         String[] rawArray = rawRequest.split("\r\n");
+        // Header部分是否已经结束
         boolean isEndHeader = false;
         Map<String, String> header = new HashMap<>();
         Map<String, String> params = new HashMap<>();
@@ -34,6 +35,7 @@ public class RequestImpl implements Request {
         String url = null;
         String protocol = null;
         StringBuilder body = new StringBuilder();
+        // 开始解析
         for (int i = 0; i < rawArray.length; i++) {
             String s = rawArray[i];
             if (i == 0) {
@@ -85,8 +87,8 @@ public class RequestImpl implements Request {
                 }
             }
         }
-        String sBody = body.toString();
-        if (!TextUtils.isEmpty(sBody)) {
+        String tempBody = body.toString();
+        if (!TextUtils.isEmpty(tempBody)) {
             for (String s : body.toString().split("&")) {
                 String[] split = s.split("=");
                 data.put(split[0], split[1]);

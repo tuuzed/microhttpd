@@ -10,7 +10,7 @@ public class Example {
                 .setBindPort(5000)
                 .setDebug(true)
                 .build();
-        server.register("^/static/.*", new StaticFileHandler("^/static/.*", "D:\\"));
+        server.register(staticfile, new StaticFileHandler(staticfile, "D:\\"));
         server.register("^/index$", new IndexHttpHandler());
         try {
             server.startup();

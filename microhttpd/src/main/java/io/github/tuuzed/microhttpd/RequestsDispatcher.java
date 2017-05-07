@@ -43,10 +43,10 @@ class RequestsDispatcher {
     /**
      * 调度
      *
-     * @param client:客户端连接Socket对象
+     * @param connect:客户端连接Socket对象
      */
-    void dispatch(Socket client) {
-        mThreadPool.execute(new ClientProcessRunnable(this, client, mBufSize));
+    void dispatch(Socket connect) {
+        mThreadPool.execute(new ConnectionProcessor(this, connect, mBufSize));
     }
 
     /**

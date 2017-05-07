@@ -1,10 +1,12 @@
 package io.github.tuuzed.microhttpd;
 
-public class MicroHTTPdBuilder {
+public class MicroHTTPdBuilder implements Builder<MicroHTTPd> {
     int port;
     int threadNumber;
     int bufSize;
     int timeout;
+    String prefix;
+    String path;
     // 调试
     boolean debug;
     boolean stacktrace;
@@ -29,6 +31,12 @@ public class MicroHTTPdBuilder {
         return this;
     }
 
+    public MicroHTTPdBuilder useStaticFileHandler(String prefix, String path) {
+        this.prefix = prefix;
+        this.path = path;
+        return this;
+    }
+
     public MicroHTTPdBuilder setDebug(boolean debug) {
         this.debug = debug;
         return this;
@@ -39,6 +47,8 @@ public class MicroHTTPdBuilder {
         return this;
     }
 
+
+    @Override
     public MicroHTTPd build() {
         // 默认绑定端口号为5000
         if (this.port == 0) {

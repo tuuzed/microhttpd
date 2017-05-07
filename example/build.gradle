@@ -11,6 +11,5 @@ repositories {
 
 dependencies {
     compile project(path:":microhttpd")
-    compile project(path:":staticfile")
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

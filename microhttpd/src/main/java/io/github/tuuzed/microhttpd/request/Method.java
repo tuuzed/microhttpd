@@ -3,7 +3,7 @@ package io.github.tuuzed.microhttpd.request;
 /**
  * @author TuuZed
  */
-public class Method {
+public final class Method {
     public static final String GET = "GET";
     public static final String POST = "POST";
     public static final String PUT = "PUT";

@@ -23,10 +23,10 @@ class ServerListenRunnable implements Runnable {
         try {
             while (!mServerSocket.isClosed()) {
                 sLogger.d("accepting...");
-                Socket client = mServerSocket.accept();
-                sLogger.d(String.format("Client (%d) connected...", client.hashCode()));
-                client.setSoTimeout(mTimeout);
-                mDispatcher.dispatch(client);
+                Socket connect = mServerSocket.accept();
+                sLogger.d(String.format("Client (%d) connected...", connect.hashCode()));
+                connect.setSoTimeout(mTimeout);
+                mDispatcher.dispatch(connect);
             }
         } catch (IOException e) {
             sLogger.e(e);

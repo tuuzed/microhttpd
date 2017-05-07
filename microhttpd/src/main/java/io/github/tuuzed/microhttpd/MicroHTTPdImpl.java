@@ -2,7 +2,9 @@ package io.github.tuuzed.microhttpd;
 
 
 import io.github.tuuzed.microhttpd.handler.Handler;
+import io.github.tuuzed.microhttpd.staticfile.StaticFileHandler;
 import io.github.tuuzed.microhttpd.util.Logger;
+import io.github.tuuzed.microhttpd.util.TextUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -21,7 +23,11 @@ class MicroHTTPdImpl implements MicroHTTPd {
         Logger.setStacktrace(builder.stacktrace);
         this.mPort = builder.port;
         this.mTimeout = builder.timeout;
-        mDispatcher = new RequestsDispatcher(builder.threadNumber, builder.bufSize);
+        this.mDispatcher = new RequestsDispatcher(builder.threadNumber, builder.bufSize);
+        if (!TextUtils.isEmpty(builder.prefix) && builder.prefix.startsWith("^/")) {
+            register(builder.prefix,
+                    new StaticFileHandler(builder.prefix, builder.path));
+        }
     }
 
     @Override
@@ -39,7 +45,7 @@ class MicroHTTPdImpl implements MicroHTTPd {
 
     @Override
     public void register(String route, Handler handler) {
-        if (route.length() > 2 && "^/".equals(route.substring(0, 2))) {
+        if (!TextUtils.isEmpty(route) && route.startsWith("^/")) {
             mDispatcher.register(route, handler);
         } else {
             throw new RuntimeException(String.format("uriRegex '%s' Non conformity,UriRegex needs to start '^/'!", route));
@@ -55,6 +61,5 @@ class MicroHTTPdImpl implements MicroHTTPd {
             }
         }
     }
-
 }
 

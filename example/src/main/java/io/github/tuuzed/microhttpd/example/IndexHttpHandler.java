@@ -11,15 +11,11 @@ public class IndexHttpHandler extends HttpHandler {
 
     @Override
     public void doGet(Request request, Response response) throws IOException {
-        response.setContentType("text/plain");
-        response.addHeader("Date", new Date().toString());
-        response.write("hello\n" + request.toString());
+        response.renderText("hello\n" + request.toString());
     }
 
     @Override
     public void doPost(Request request, Response response) throws IOException {
-        response.setContentType("text/plain");
-        response.addHeader("Date", new Date().toString());
-        response.write("hello\n" + request.toString());
+        response.renderText("hello\n" + request.toString());
     }
 }

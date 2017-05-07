@@ -7,21 +7,23 @@ import java.io.InputStream;
 
 public interface Response extends Closeable {
 
-    void write(InputStream in) throws IOException;
-
-    void write(InputStream in, int bufSize) throws IOException;
-
-    void write(byte[] bytes) throws IOException;
-
-    void write(byte[] bytes, int off, int len) throws IOException;
-
-    void write(String str) throws IOException;
-
-    void write(String str, String charsetName) throws IOException;
-
     void setStatus(Status status);
 
     void setContentType(String contentType);
 
     void addHeader(String key, String value);
+
+    void renderHtml(String html) throws IOException;
+
+    void renderText(String text) throws IOException;
+
+    void renderJson(String text) throws IOException;
+
+    void renderXml(String text) throws IOException;
+
+    void renderFile(File file) throws IOException;
+
+    void renderError(Status status) throws IOException;
+
+    void renderError(Status status, String errMsg) throws IOException;
 }

@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" filepath="$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" filepath="$PROJECT_DIR$/.idea/modules/staticfile/staticfile.iml" />
     </modules>
   </component>
 </project>
