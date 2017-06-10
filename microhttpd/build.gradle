@@ -1,4 +1,4 @@
-group 'io.github.tuuzed.minihttpd'
+group 'com.tuuzed.minihttpd'
 version '1.0.2'
 
 apply plugin: 'java'
