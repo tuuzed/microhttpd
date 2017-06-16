@@ -148,13 +148,28 @@ public class HttpRequestImpl implements HttpRequest {
     }
 
     @Override
-    public String getParams(String key) {
+    public Map<String, String> getHeaders() {
+        return header;
+    }
+
+    @Override
+    public String getParam(String key) {
         return params.get(key);
+    }
+
+    @Override
+    public Map<String, String> getParams() {
+        return params;
     }
 
     @Override
     public String getData(String key) {
         return data.get(key);
+    }
+
+    @Override
+    public Map<String, String> getAllData() {
+        return data;
     }
 
     @Override

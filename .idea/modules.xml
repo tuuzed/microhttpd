@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" filepath="$PROJECT_DIR$/.idea/modules/MicroHTTPd.iml" />
+      <module fileurl="file://E:\Code\Java\MicroHTTPd\.idea\modules\MicroHTTPd.iml" filepath="E:\Code\Java\MicroHTTPd\.idea\modules\MicroHTTPd.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/example.iml" filepath="$PROJECT_DIR$/.idea/modules/example/example.iml" />
+      <module fileurl="file://E:\Code\Java\MicroHTTPd\.idea\modules\example\example.iml" filepath="E:\Code\Java\MicroHTTPd\.idea\modules\example\example.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" filepath="$PROJECT_DIR$/.idea/modules/microhttpd/microhttpd.iml" />
+      <module fileurl="file://E:\Code\Java\MicroHTTPd\.idea\modules\microhttpd\microhttpd.iml" filepath="E:\Code\Java\MicroHTTPd\.idea\modules\microhttpd\microhttpd.iml" />
     </modules>
   </component>
 </project>
