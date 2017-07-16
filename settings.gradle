@@ -1,4 +1,0 @@
-rootProject.name = 'MicroHTTPd'
-include 'microhttpd'
-include 'example'
-
