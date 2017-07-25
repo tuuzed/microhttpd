@@ -1,8 +1,8 @@
 package com.tuuzed.microhttpd.example;
 
 import com.tuuzed.microhttpd.handler.HttpHandler;
-import com.tuuzed.microhttpd.request.HttpRequest;
-import com.tuuzed.microhttpd.response.HttpResponse;
+import com.tuuzed.microhttpd.http.request.HttpRequest;
+import com.tuuzed.microhttpd.http.response.HttpResponse;
 
 import java.io.IOException;
 
