@@ -3,16 +3,16 @@
 
 #### 简单使用
 ```Java
-// Example.java
-public class Example {
+// Simple.java
+public class Simple {
     public static void main(String[] args) {
         MicroHTTPd server = new MicroHTTPd.Builder()
-                .setBindPort(5000)
-                .setPrefix("^/static/.*")
-                .setPath("D:\\")
-                .setDebug(true)
+                .setPort(5000)
+                .useFileView("^/static/.*", "C:\\")
+                .debug(true, true)
                 .build();
-        server.register("^/$", new IndexHttpHandler());
+        server.register(new IndexView());
+        server.register(new UploadView());
         try {
             server.startup();
         } catch (IOException e) {
@@ -23,19 +23,18 @@ public class Example {
 
 
 
-// IndexHttpHandler.java
-public class IndexHttpHandler extends HttpHandler {
+// IndexView.java
+@Route("^/$")
+public class IndexView extends MethodView {
 
     @Override
-    public void doGet(Request request, Response response) throws IOException {
-        // 注意这里不能调用父类的doGet(Request request, Response response)方法
-        response.renderText("hello\n" + request.toString());
+    public void doGet(Request req, Response resp) throws IOException {
+        resp.renderText("hello\n" + req.toString());
     }
 
     @Override
-    public void doPost(Request request, Response response) throws IOException {
-        // 注意这里不能调用父类的doPost(Request request, Response response)方法
-        response.renderText("hello\n" + request.toString());
+    public void doPost(Request req, Response resp) throws IOException {
+        resp.renderText("hello\n" + req.toString());
     }
 }
 

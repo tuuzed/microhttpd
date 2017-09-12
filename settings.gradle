@@ -1,0 +1,4 @@
+rootProject.name = 'microhttpd'
+include 'simple'
+include 'microhttpd'
+
