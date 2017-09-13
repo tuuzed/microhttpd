@@ -1,32 +1,35 @@
 package com.tuuzed.microhttpd.http;
 
-import com.tuuzed.microhttpd.common.util.Logger;
+import com.tuuzed.microhttpd.common.log.Logger;
+import com.tuuzed.microhttpd.common.log.LoggerFactory;
+import com.tuuzed.microhttpd.exception.HttpProtocolFormatException;
+import com.tuuzed.microhttpd.exception.TimeoutException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class RequestImpl implements Request {
-    private static final Logger logger = Logger.getLogger(RequestImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestImpl.class);
     private String mUrl;
     private String mMethod;
-    private String mProtocol;
-    private Map<String, String> mParams = new HashMap<>();
+    private Protocol mProtocol;
+    private Map<String, String> mQueryParams = new HashMap<>();
     private byte[] mData;
     private Map<String, String> mHeaders = new HashMap<>();
     private InputStream mInput;
 
     @NotNull
     public static Request create(@NotNull InputStream inputStream) throws Exception {
-        RequestImpl httpRequest = new RequestImpl(inputStream);
-        httpRequest.parser();
-        return httpRequest;
+        RequestImpl request = new RequestImpl(inputStream);
+        request.parser();
+        return request;
     }
 
     private RequestImpl(@NotNull InputStream inputStream) {
@@ -44,7 +47,7 @@ public class RequestImpl implements Request {
     }
 
     @Override
-    public String getProtocol() {
+    public Protocol getProtocol() {
         return mProtocol;
     }
 
@@ -54,23 +57,28 @@ public class RequestImpl implements Request {
     }
 
     @Override
-    public String getParam(String key) {
-        return mParams.get(key);
+    public String getQueryParam(String key) {
+        return mQueryParams.get(key);
     }
 
+    @Nullable
     @Override
-    public byte[] getData() throws IOException {
-        if (mData == null && mInput.available() > 0) {
-            int len;
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-            while (mInput.available() > 0) {
-                len = mInput.read(buf);
-                output.write(buf, 0, len);
+    public byte[] getData() {
+        try {
+            if (mData == null && mInput.available() > 0) {
+                int len;
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                byte[] buf = new byte[1024];
+                while (mInput.available() > 0) {
+                    len = mInput.read(buf);
+                    output.write(buf, 0, len);
+                }
+                output.flush();
+                mData = output.toByteArray();
+                output.close();
             }
-            output.flush();
-            mData = output.toByteArray();
-            output.close();
+        } catch (IOException e) {
+            logger.debug("{}", e, e);
         }
         return mData;
     }
@@ -79,7 +87,7 @@ public class RequestImpl implements Request {
         int timer = 0;
         while (mInput.available() <= 0) {
             timer += 10;
-            if (timer >= 30_000) throw new SocketTimeoutException("timeout");
+            if (timer >= 3_000) throw new TimeoutException("timeout");
             else TimeUnit.MILLISECONDS.sleep(10);
         }
         String line;
@@ -90,7 +98,7 @@ public class RequestImpl implements Request {
             if (line == null || line.trim().isEmpty()) break;
             if (first) {
                 String[] requestLine = line.split(" ");
-                if (requestLine.length != 3) throw new Exception("error");
+                if (requestLine.length != 3) throw new HttpProtocolFormatException("Request Line Format Error");
                 // Method
                 mMethod = requestLine[0].toUpperCase();
                 // Url And Params
@@ -103,14 +111,19 @@ public class RequestImpl implements Request {
                         if (index != -1) {
                             String key = URLDecoder.decode(param.substring(0, index), "utf-8");
                             String value = URLDecoder.decode(param.substring(index + 1), "utf-8");
-                            mParams.put(key, value);
+                            mQueryParams.put(key, value);
                         }
                     }
                 } else {
                     mUrl = URLDecoder.decode(requestLine[1], "utf-8");
                 }
                 // Protocol
-                mProtocol = requestLine[2].toUpperCase();
+                String protocol = requestLine[2].trim();
+                index = protocol.indexOf('/');
+                if (index == -1) {
+                    throw new HttpProtocolFormatException("Request Line Format Error");
+                }
+                mProtocol = new Protocol(protocol.substring(0, index), protocol.substring(index + 1));
             } else {
                 int index = line.indexOf(':');
                 if (index != -1) {
@@ -132,5 +145,22 @@ public class RequestImpl implements Request {
         }
         String line = sb.toString();
         return line.isEmpty() ? null : line;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Request {")
+                .append("\nurl = ").append(mUrl)
+                .append("\nmethod = ").append(mMethod)
+                .append("\nprotocol = ").append(mProtocol)
+                .append("\nheaders = ").append(mHeaders)
+                .append("\nqueryParams = ").append(mQueryParams);
+        getData();
+        if (mData != null) {
+            builder.append("\ndata = ").append(new String(mData));
+        }
+        builder.append("\n}");
+        return builder.toString();
     }
 }

@@ -1,10 +1,11 @@
 package com.tuuzed.microhttpd.view.file;
 
 
+import com.tuuzed.microhttpd.common.log.Logger;
+import com.tuuzed.microhttpd.common.log.LoggerFactory;
 import com.tuuzed.microhttpd.http.Request;
 import com.tuuzed.microhttpd.http.Response;
 import com.tuuzed.microhttpd.http.Status;
-import com.tuuzed.microhttpd.common.util.Logger;
 import com.tuuzed.microhttpd.view.View;
 
 import java.io.File;
@@ -15,28 +16,28 @@ import java.util.regex.Pattern;
  * 静态文件处理
  */
 public class FileView implements View {
-    private final static Logger logger = Logger.getLogger(FileView.class);
+    private final static Logger logger = LoggerFactory.getLogger(FileView.class);
 
     private final static Pattern DEF_INDEX = Pattern.compile("^((index)|(default))\\.((htm)|(html))$");
-    private String uriRegex;
-    private String staticDir;
+    private String route;
+    private String filepath;
 
-    public FileView(String uriRegex, String staticDir) {
-        this(uriRegex, new File(staticDir));
+    public FileView(String route, String path) {
+        this(route, new File(path));
     }
 
-    public FileView(String uriRegex, File staticDir) {
-        this.uriRegex = uriRegex;
-        this.staticDir = staticDir.getAbsolutePath();
+    public FileView(String route, File filepath) {
+        this.route = route;
+        this.filepath = filepath.getAbsolutePath();
     }
 
     @Override
     public void serve(Request req, Response resp) throws IOException {
         logger.debug("Receive request...{}", req);
         String url = req.getUrl();
-        // ^/fileview/.*  => /fileview/
+        // ^/fileview/.*    => /fileview/
         // ^/.*             => /
-        String path = staticDir + File.separator + url.replaceFirst(uriRegex.substring(1, uriRegex.length() - 2), "");
+        String path = filepath + File.separator + url.replaceFirst(route.substring(1, route.length() - 2), "");
         logger.debug("path = {}", path);
         File file = new File(path);
         if (!file.exists()) {
@@ -50,7 +51,7 @@ public class FileView implements View {
             File[] files = file.listFiles();
             if (files == null) {
                 // 空文件夹
-                if (!file.getAbsolutePath().equals(staticDir)) {
+                if (!file.getAbsolutePath().equals(filepath)) {
                     // 返回上级目录
                     resp.renderHtml("<a href=\"../\">../</a><br/>\n");
                 }
@@ -71,17 +72,16 @@ public class FileView implements View {
                 // 没有找到默认首页文件
                 if (file.isDirectory()) {
                     StringBuilder sb = new StringBuilder();
-                    if (!file.getAbsolutePath().equals(staticDir)) {
+                    if (!file.getAbsolutePath().equals(filepath)) {
                         // 返回上级目录
                         sb.append("<a href=\"../\">../</a><br/>\n");
                     }
                     for (File f : files) {
+                        String filename = f.getName();
                         if (f.isDirectory()) {
-                            sb.append(String.format("<a href=\"./%s/\">%s/</a><br/>\n",
-                                    f.getName(), f.getName()));
+                            sb.append(String.format("<a href=\"./%s/\">%s/</a><br/>\n", filename, filename));
                         } else {
-                            sb.append(String.format("<a href=\"./%s\">%s</a><br/>\n",
-                                    f.getName(), f.getName()));
+                            sb.append(String.format("<a href=\"./%s\">%s</a><br/>\n", filename, filename));
                         }
                     }
                     resp.renderHtml(sb.toString());

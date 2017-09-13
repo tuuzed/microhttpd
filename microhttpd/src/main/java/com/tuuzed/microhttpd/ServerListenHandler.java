@@ -1,7 +1,8 @@
 package com.tuuzed.microhttpd;
 
+import com.tuuzed.microhttpd.common.log.Logger;
+import com.tuuzed.microhttpd.common.log.LoggerFactory;
 import com.tuuzed.microhttpd.common.util.CloseableUtils;
-import com.tuuzed.microhttpd.common.util.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.net.Socket;
  * 监听连接
  */
 class ServerListenHandler implements Runnable {
-    private static final Logger logger = Logger.getLogger(ServerListenHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServerListenHandler.class);
     private RequestDispatcher mDispatcher;
     private ServerSocket mServerSocket;
     private int mTimeout;

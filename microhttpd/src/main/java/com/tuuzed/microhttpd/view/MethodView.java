@@ -1,10 +1,11 @@
 package com.tuuzed.microhttpd.view;
 
-import com.tuuzed.microhttpd.http.Request;
+import com.tuuzed.microhttpd.common.log.Logger;
+import com.tuuzed.microhttpd.common.log.LoggerFactory;
 import com.tuuzed.microhttpd.http.Method;
+import com.tuuzed.microhttpd.http.Request;
 import com.tuuzed.microhttpd.http.Response;
 import com.tuuzed.microhttpd.http.Status;
-import com.tuuzed.microhttpd.common.util.Logger;
 
 import java.io.IOException;
 
@@ -12,11 +13,11 @@ import java.io.IOException;
  * Http请求处理
  */
 public class MethodView implements View {
-    private final static Logger logger = Logger.getLogger(MethodView.class);
+    private final static Logger logger = LoggerFactory.getLogger(MethodView.class);
 
     @Override
     public void serve(Request req, Response resp) throws IOException {
-        logger.debug("Receive request..." + req.toString());
+        logger.debug("Receive request... {}", req.toString());
         String method = req.getMethod();
         switch (method) {
             case Method.GET:

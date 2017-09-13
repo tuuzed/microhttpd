@@ -1,24 +1,29 @@
 package com.tuuzed.microhttpd;
 
+import com.tuuzed.microhttpd.common.log.Logger;
+import com.tuuzed.microhttpd.common.log.LoggerFactory;
 import com.tuuzed.microhttpd.common.util.CloseableUtils;
-import com.tuuzed.microhttpd.common.util.Logger;
-import com.tuuzed.microhttpd.http.Request;
-import com.tuuzed.microhttpd.http.RequestImpl;
-import com.tuuzed.microhttpd.http.Response;
-import com.tuuzed.microhttpd.http.ResponseImpl;
-import com.tuuzed.microhttpd.http.Status;
+import com.tuuzed.microhttpd.http.*;
+import com.tuuzed.microhttpd.route.Routes;
 import com.tuuzed.microhttpd.view.View;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.net.Socket;
 
 class AcceptHandler implements Runnable {
-    private static final Logger logger = Logger.getLogger(AcceptHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(AcceptHandler.class);
     private Socket mSocket;
-    private RequestDispatcher mDispatcher;
+    private Routes mRoutes;
 
-    AcceptHandler(RequestDispatcher dispatcher, Socket socket) {
-        mDispatcher = dispatcher;
+    static AcceptHandler create(@NotNull Routes routes,
+                                @NotNull Socket socket) {
+        return new AcceptHandler(routes, socket);
+    }
+
+    private AcceptHandler(@NotNull Routes routes,
+                          @NotNull Socket socket) {
+        mRoutes = routes;
         mSocket = socket;
     }
 
@@ -30,7 +35,7 @@ class AcceptHandler implements Runnable {
             Request request = RequestImpl.create(input = mSocket.getInputStream());
             String url = request.getUrl();
             logger.debug("{}", request);
-            View view = mDispatcher.getView(url);
+            View view = mRoutes.getView(url);
             if (view == null) {
                 resp.renderError(Status.STATUS_404);
             } else {
@@ -41,7 +46,7 @@ class AcceptHandler implements Runnable {
         } finally {
             CloseableUtils.safeClose(input);
             CloseableUtils.safeClose(resp);
-            logger.debug("{} disconnect...", mDispatcher.hashCode());
+            logger.debug("{} disconnect...", mSocket.hashCode());
         }
     }
 }

@@ -12,8 +12,8 @@ public class Simple {
                 .useFileView("^/static/.*", "C:\\")
                 .debug(true, true)
                 .build();
-        server.register(new IndexView());
-        server.register(new UploadView());
+        server.registerView(new IndexView());
+        server.registerView(new UploadView());
         try {
             server.startup();
         } catch (IOException e) {

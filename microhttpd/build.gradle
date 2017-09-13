@@ -3,7 +3,7 @@ version '1.0.0'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
@@ -11,7 +11,6 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
     compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
 
 }

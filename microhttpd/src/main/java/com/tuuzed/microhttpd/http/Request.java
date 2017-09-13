@@ -1,17 +1,18 @@
 package com.tuuzed.microhttpd.http;
 
-import java.io.IOException;
+import org.jetbrains.annotations.Nullable;
 
 public interface Request {
     String getMethod();
 
     String getUrl();
 
-    String getProtocol();
+    Protocol getProtocol();
 
     String getHeader(String key);
 
-    String getParam(String key);
+    String getQueryParam(String key);
 
-    byte[] getData() throws IOException;
+    @Nullable
+    byte[] getData();
 }

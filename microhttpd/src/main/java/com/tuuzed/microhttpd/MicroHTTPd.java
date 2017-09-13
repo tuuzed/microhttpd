@@ -2,9 +2,11 @@ package com.tuuzed.microhttpd;
 
 
 import com.tuuzed.microhttpd.annotation.Route;
+import com.tuuzed.microhttpd.common.log.Logger;
+import com.tuuzed.microhttpd.common.log.LoggerFactory;
 import com.tuuzed.microhttpd.common.util.CloseableUtils;
-import com.tuuzed.microhttpd.common.util.Logger;
 import com.tuuzed.microhttpd.common.util.StringUtils;
+import com.tuuzed.microhttpd.route.Routes;
 import com.tuuzed.microhttpd.view.View;
 import com.tuuzed.microhttpd.view.file.FileView;
 import org.jetbrains.annotations.NotNull;
@@ -15,20 +17,20 @@ import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 
 public class MicroHTTPd {
-    private static final Logger logger = Logger.getLogger(MicroHTTPd.class);
+    private static final Logger logger = LoggerFactory.getLogger(MicroHTTPd.class);
     private RequestDispatcher mDispatcher;
     private int mPort;
     private int mTimeout;
     private ServerSocket mServerSocket;
+    private Routes mRoutes;
 
     private MicroHTTPd(@NotNull Builder builder) {
-        Logger.setDebug(builder.debug);
-        Logger.setPrintStackTrace(builder.printStacktrace);
         this.mPort = builder.port;
         this.mTimeout = builder.timeout;
-        this.mDispatcher = RequestDispatcher.create(builder.threads);
+        this.mRoutes = builder.routes;
+        this.mDispatcher = RequestDispatcher.create(builder.threads, builder.routes);
         if (!StringUtils.isEmpty(builder.prefix) && builder.prefix.startsWith("^/")) {
-            register(builder.prefix, new FileView(builder.prefix, builder.path));
+            registerView(builder.prefix, new FileView(builder.prefix, builder.path), 0);
         }
     }
 
@@ -50,10 +52,10 @@ public class MicroHTTPd {
         CloseableUtils.safeClose(mServerSocket);
     }
 
-    public void register(@NotNull View view) {
+    public void registerView(@NotNull View view) {
         Route route = view.getClass().getAnnotation(Route.class);
         if (route != null) {
-            register(route.value(), view);
+            registerView(route.value(), view, route.priority());
         } else {
             throw new RuntimeException("Not Route");
         }
@@ -65,9 +67,9 @@ public class MicroHTTPd {
      * @param route 路由(支持正则匹配)
      * @param view  处理者
      */
-    public void register(@NotNull String route, @NotNull View view) {
+    public void registerView(@NotNull String route, @NotNull View view, int priority) {
         if (!StringUtils.isEmpty(route) && route.startsWith("^/")) {
-            mDispatcher.register(route, view);
+            mRoutes.registerView(route, view, priority);
         } else {
             throw new RuntimeException(String.format("route '%s' Non conformity,route needs to start '^/'!", route));
         }
@@ -80,6 +82,7 @@ public class MicroHTTPd {
         private String charset;
         private String prefix;
         private String path;
+        private Routes routes;
         // 调试
         boolean debug;
         boolean printStacktrace;
@@ -100,20 +103,26 @@ public class MicroHTTPd {
         }
 
 
-        public Builder setCharset(String charset) {
+        public Builder setCharset(@NotNull String charset) {
             this.charset = charset;
             return this;
         }
 
-        public Builder useFileView(String prefix, String path) {
+        public Builder useFileView(@NotNull String prefix, @NotNull String path) {
             this.prefix = prefix;
             this.path = path;
             return this;
         }
 
+        public void setRoutes(@NotNull Routes routes) {
+            this.routes = routes;
+        }
+
         public Builder debug(boolean debug, boolean printStacktrace) {
             this.debug = debug;
             this.printStacktrace = printStacktrace;
+            LoggerFactory.setGlobalDebug(debug);
+            LoggerFactory.setGlobalPrintStackTrace(printStacktrace);
             return this;
         }
 
@@ -124,6 +133,7 @@ public class MicroHTTPd {
             // 默认超时为30秒
             if (timeout == null) timeout = 30_000;
             if (charset == null) charset = "utf-8";
+            if (routes == null) routes = Routes.getDefault();
             return new MicroHTTPd(this);
         }
 
