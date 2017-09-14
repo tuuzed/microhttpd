@@ -7,11 +7,12 @@ import com.tuuzed.microhttpd.exception.TimeoutException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -67,15 +68,19 @@ public class RequestImpl implements Request {
         try {
             if (mData == null && mInput.available() > 0) {
                 int len;
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                List<Byte> bytes = new ArrayList<>(1024);
                 byte[] buf = new byte[1024];
                 while (mInput.available() > 0) {
                     len = mInput.read(buf);
-                    output.write(buf, 0, len);
+                    for (int i = 0; i < len; i++) {
+                        bytes.add(buf[i]);
+                    }
                 }
-                output.flush();
-                mData = output.toByteArray();
-                output.close();
+                mData = new byte[bytes.size()];
+                for (int i = 0; i < mData.length; i++) {
+                    mData[i] = bytes.get(i);
+                }
+                bytes.clear();
             }
         } catch (IOException e) {
             logger.debug("{}", e, e);
