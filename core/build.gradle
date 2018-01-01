@@ -1,0 +1,18 @@
+group microhttpd_infos.version
+version microhttpd_infos.version
+
+apply plugin: 'java'
+
+sourceCompatibility = versions.sourceCompatibility
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:' + versions.annotations
+    testImplementation 'junit:junit:' + versions.junit
+}
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
