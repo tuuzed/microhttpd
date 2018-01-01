@@ -3,39 +3,34 @@
 
 #### 简单使用
 ```Java
-// Simple.java
-public class Simple {
+// MicroHTTPDSample.java
+public class MicroHTTPDSample {
+
     public static void main(String[] args) {
-        MicroHTTPd server = new MicroHTTPd.Builder()
-                .setPort(5000)
-                .useFileView("^/static/.*", "C:\\")
-                .debug(true, true)
-                .build();
-        server.register(new IndexView());
-        server.register(new UploadView());
-        try {
-            server.startup();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        RouteHttpRequestDispatcher dispatcher = new RouteHttpRequestDispatcher()
+                .addHandler(Pattern.compile("^/req$"), req -> {
+                    return HttpResponses.text(req.toString());
+                })
+                .addHandler(Pattern.compile("^/$"), req -> {
+                    return HttpResponses.text("hello every one");
+                })
+                .addHandler(Pattern.compile("^/mimetypes/*$"), req -> {
+                    URL resource = MicroHTTPD.class.getResource("/mimetypes.txt");
+                    File file = new File(resource.getFile());
+                    return HttpResponses.file(file);
+                })
+                .addHandler(Pattern.compile("^/redirect/*$"), req -> {
+                    return HttpResponses.redirect_301("//localhost:8000");
+                })
+                .addHandler(Pattern.compile("^/redirect2/*$"), req -> {
+                    return HttpResponses.redirect_301("/mimetypes");
+                });
+        MicroHTTPD.builder()
+                .addHttpRequestDispatcher(dispatcher)
+                .useStaticFileHttpRequestDispatcher("/static/", new File("C:\\"))
+                .setTimeout(1000, TimeUnit.MILLISECONDS)
+                .build()
+                .start();
     }
 }
-
-
-
-// IndexView.java
-@Route("^/$")
-public class IndexView extends MethodView {
-
-    @Override
-    public void doGet(Request req, Response resp) throws IOException {
-        resp.renderText("hello\n" + req.toString());
-    }
-
-    @Override
-    public void doPost(Request req, Response resp) throws IOException {
-        resp.renderText("hello\n" + req.toString());
-    }
-}
-
 ```
