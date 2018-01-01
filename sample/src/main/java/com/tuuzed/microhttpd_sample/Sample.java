@@ -1,4 +1,4 @@
-package com.tuuzed.microhttpd_simple;
+package com.tuuzed.microhttpd_sample;
 
 
 import com.tuuzed.microhttpd.MicroHTTPd;
