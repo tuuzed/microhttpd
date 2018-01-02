@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tuuzed.lib.microhttpd.core.HttpConnectionProcessor;
 import tuuzed.lib.microhttpd.core.StaticFileHttpRequestDispatcher;
+import tuuzed.lib.microhttpd.internal.LogFormatter;
 import tuuzed.lib.microhttpd.util.CloseUtils;
 import tuuzed.lib.microhttpd.util.SleepUtils;
 import tuuzed.lib.microhttpd.util.ThreadUtils;
@@ -55,7 +56,23 @@ public class MicroHTTPD {
     public void start() {
         if (!mStarted.get()) {
             mStarted.set(true);
+            ThreadUtils.runOnIoThread(new Runnable() {
+                @Override
+                public void run() {
+                    startup();
+                }
+            });
+            if (mListenHostname == null) {
+                sLogger.log(Level.INFO, LogFormatter.format("Serving HTTP on 0.0.0.0 port {} (http://0.0.0.0:{}/)",
+                        mListenPort, mListenPort));
+            } else {
+                sLogger.log(Level.INFO, LogFormatter.format("Serving HTTP on {} port {} (http://{}:{}/)",
+                        mListenHostname, mListenPort, mListenHostname, mListenPort));
+            }
         }
+    }
+
+    private void startup() {
         SocketAddress endpoint;
         if (mListenHostname == null) {
             endpoint = new InetSocketAddress(mListenPort);
@@ -84,13 +101,16 @@ public class MicroHTTPD {
     }
 
     private void serv(@NotNull final Socket socket) {
-        Runnable runnable = () -> {
-            try {
-                mConnectionProcessor.process(socket);
-            } catch (IOException | TimeoutException e) {
-                e.printStackTrace();
-            } finally {
-                CloseUtils.close(socket);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mConnectionProcessor.process(socket);
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                } finally {
+                    CloseUtils.close(socket);
+                }
             }
         };
         if (mThreadPool != null) {

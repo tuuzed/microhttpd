@@ -14,6 +14,7 @@ public class StaticFileHttpRequestDispatcher implements HttpRequestDispatcher {
     private final static Pattern INDEX_FILE = Pattern.compile("^((index)|(default))\\.((htm)|(html))$");
     private String urlPrefix;
     private File path;
+    private Pattern pattern;
 
     public StaticFileHttpRequestDispatcher(String urlPrefix, File path) {
         if (!urlPrefix.startsWith("/")) {
@@ -22,6 +23,7 @@ public class StaticFileHttpRequestDispatcher implements HttpRequestDispatcher {
         if (!urlPrefix.endsWith("/")) {
             urlPrefix += "/";
         }
+        pattern = Pattern.compile("^" + urlPrefix + "*");
         this.urlPrefix = urlPrefix;
         this.path = path;
     }
@@ -40,7 +42,7 @@ public class StaticFileHttpRequestDispatcher implements HttpRequestDispatcher {
         if (child.isEmpty()) {
             dirname = File.separator;
         } else {
-            dirname = File.separator + file.getPath().substring(path.getPath().length());
+            dirname = file.getPath().substring(path.getPath().length());
         }
         if (file.isFile()) {
             return HttpResponses.file(file);

@@ -3,7 +3,7 @@ version microhttpd_infos.version
 
 apply plugin: 'java'
 
-sourceCompatibility = versions.sourceCompatibility
+sourceCompatibility = versions.core_jdk
 
 repositories {
     mavenCentral()

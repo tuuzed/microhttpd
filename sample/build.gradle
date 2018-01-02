@@ -3,14 +3,15 @@ version microhttpd_infos.version
 
 apply plugin: 'java'
 
-sourceCompatibility = versions.sourceCompatibility
+sourceCompatibility = versions.sample_jdk
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile project(path: ':core')
+    implementation project(path: ':core')
+    implementation 'args4j:args4j:' + versions.args4j
     implementation 'org.jetbrains:annotations:' + versions.annotations
     testImplementation 'junit:junit:' + versions.junit
 }

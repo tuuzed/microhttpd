@@ -140,7 +140,7 @@ public class ArrayMap<K, V> implements Map<K, V> {
     public Set<Map.Entry<K, V>> entrySet() {
         Set<Map.Entry<K, V>> entries = new HashSet<>(size);
         for (int i = 0; i < size; i++) {
-            int finalI = i;
+            final int finalI = i;
             entries.add(new Entry<K, V>() {
                 @Override
                 public K getKey() {

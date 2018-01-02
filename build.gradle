@@ -1,8 +1,16 @@
+group microhttpd_infos.group
+version microhttpd_infos.version
+
+apply plugin: 'java'
+sourceCompatibility = versions.sourceCompatibility
+
 buildscript {
     ext.versions = [
-            sourceCompatibility: 1.8,
-            annotations        : '13.0',
-            junit              : '4.12',
+            core_jdk   : 1.7,
+            sample_jdk : 1.8,
+            args4j     : '2.33',
+            annotations: '13.0',
+            junit      : '4.12',
     ]
     ext.microhttpd_infos = [
             group  : 'tuuzed.lib.microhttpd',
@@ -15,16 +23,6 @@ buildscript {
     }
 }
 
-group microhttpd_infos.group
-version microhttpd_infos.version
-
-apply plugin: 'java'
-
-sourceCompatibility = versions.sourceCompatibility
-
 repositories {
     mavenCentral()
-}
-dependencies {
-    testImplementation 'junit:junit:' + versions.junit
 }

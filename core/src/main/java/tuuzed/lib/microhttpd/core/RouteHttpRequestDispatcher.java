@@ -7,6 +7,8 @@ import tuuzed.lib.microhttpd.HttpRequestDispatcher;
 import tuuzed.lib.microhttpd.HttpResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +52,12 @@ public class RouteHttpRequestDispatcher implements HttpRequestDispatcher {
     private Handler getHandler(String url) {
         if (!isSorted) {
             synchronized (handlerHolders) {
-                handlerHolders.sort((o1, o2) -> Integer.compare(o2.priority, o1.priority));
+                Collections.sort(handlerHolders, new Comparator<HandlerHolder>() {
+                    @Override
+                    public int compare(HandlerHolder o1, HandlerHolder o2) {
+                        return Integer.compare(o2.priority, o1.priority);
+                    }
+                });
             }
             isSorted = true;
         }
